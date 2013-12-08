@@ -8,7 +8,7 @@ var exec = require('child_process').exec;
 var DOORBELL_FILE = __dirname + '/misc/doorbell-2.wav';
 var twilio_client = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database(__dirname + "/../database.db");
+var db = new sqlite3.Database(__dirname + "/../../databases/vincent.db");
 
 exports.twilio = function(req, res) {
 	var callSid = req.query.CallSid;
