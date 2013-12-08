@@ -9,7 +9,7 @@ function configure(hostname, address, sshPort) {
 	controller.scpOptions = ['-P ' + sshPort, '-r'];
 	controller.address = address;
 	controller.localDir = "./" + hostname;
-	controller.remoteDir = "/home/pi/" + hostname;
+	controller.remoteDir = "/home/pi/easel/" + hostname;
 
 	return [controller];
 }
@@ -23,12 +23,8 @@ task('pablo', 'Config for pablo', function() {
 });
 
 task('deploy', 'Deploy a machine', function(controller) {
-	controller.ssh("rm -rf " + controller.remoteDir, function() {
-		controller.scp(controller.localDir, controller.remoteDir, function() {
-			controller.ssh("cd " + controller.remoteDir + " && npm install", function() {
-				controller.ssh("/home/pi/nodejs.sh restart");
-			});
-		});
+	controller.ssh("cd /home/pi/easel && git pull origin master", function() {
+		controller.ssh("cd " + controller.remoteDir + " && npm install && /etc/init.d/nodejs.sh restart");
 	});
 });
 
