@@ -26,7 +26,7 @@ task('pablo', 'Config for pablo', function() {
 task('deploy', 'Deploy a machine', function(controller) {
 	controller.ssh("cd /home/pi/easel && git pull origin master", function() {
 		controller.ssh("cd " + controller.remoteDir + " && npm install", function() {
-			controller.ssh("sqlite3 /home/pi/easel/databases/" + controller.hostname + ".db < " + controller.remoteDir + "db_setup.sql", function() {
+			controller.ssh("sqlite3 /home/pi/easel/databases/" + controller.hostname + ".db < " + controller.remoteDir + "/db_setup.sql", function() {
 				controller.ssh("/etc/init.d/nodejs.sh restart");
 			});
 		});
