@@ -32,7 +32,7 @@ exports.twilio = function(req, res) {
 
 				ringLocally();	
 			}
-
+			console.log("got lock status from db");
 			res.send(resp.toString());
 			return false;
 		});
