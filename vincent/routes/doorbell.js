@@ -29,9 +29,8 @@ exports.twilio = function(req, res) {
 					this.number("+1-310-266-3121");
 					this.number("+1-973-216-8106");
 				});
-				if (callSid) {
-					ringLocally(callSid);	
-				}
+
+				ringLocally();	
 			}
 
 			res.send(resp.toString());
@@ -75,25 +74,13 @@ function puts(error, stdout, stderr) {
 };
 
 function playDoorbell() {
+	console.log("playing doorbell file " + DOORBELL_FILE);
 	exec("echo " + DOORBELL_FILE, puts);
 	exec("aplay " + DOORBELL_FILE, puts);
 };
 
 
-function ringLocally(callSid) {
+function ringLocally() {
 	console.log("ringing...");
 	playDoorbell();
-
-	twilio_client.calls(callSid).get(function(err, responseData) {
-		if (err) {
-			console.log("error GETting twilio call data:");
-			console.log(err);
-			return;
-		}
-		if(responseData.status === 'queued' || responseData.status === 'ringing' || responseData.status === 'in-progress') {
-			setTimeout(ringLocally, 1000);
-		} else {
-			console.log("call status: " + responseData.status);
-		}
-	});
 }
