@@ -34,6 +34,7 @@ exports.twilio = function(req, res) {
 			}
 
 			res.send(resp.toString());
+			break;
 		});
 	});
 };
