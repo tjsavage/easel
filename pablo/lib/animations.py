@@ -34,3 +34,4 @@ class PulseAnimation(Animation):
 			buffer.append((self.config["color"][0] * amplitude, 
 							self.config["color"][1] * amplitude,
 							self.config["color"][2] * amplitude))
+		return buffer
