@@ -23,6 +23,10 @@ task('pablo', 'Config for pablo', function() {
 	return configure('pablo', 'taylorsavage.com', '2221');
 });
 
+task('pablo-eth', 'Config for pablo over ethernet', function() {
+	return configure('pablo', 'taylorsavage.com', '2220');
+});
+
 task('deploy', 'Deploy a machine', function(controller) {
 	controller.ssh("cd /home/pi/easel && git pull origin master", function() {
 		controller.ssh("cd " + controller.remoteDir + " && npm install", function() {
