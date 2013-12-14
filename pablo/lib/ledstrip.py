@@ -63,15 +63,15 @@ class LEDStrip(object):
 
 	##
 	# setPixelBuffer	Sets the entire string of pixels to the passed-in array of (r,g,b) tuples
-	# 					Repeates the buffer patter if it isn't long enough.
+	# 					Repeates the buffer pattern if it isn't long enough.
 	# @param {list[tuple]} buffer 	The list of (r,g,b) tuples, with 0-1 range.
 	def setPixelBuffer(self, buffer):
 		if self.debug: print "[setPixelBuffer:LEDStrip] set all pixels ", buffer
 		if len(buffer) > self.numPixels():
 			print "ERROR: pixel buffer too long"
 		for pixel in range(self.numPixels()):
-			pixel = pixel % len(buffer)
-			r,g,b = buffer[pixel]
+			bufferPixel = pixel % len(buffer)
+			r,g,b = buffer[bufferPixel]
 			self.setPixelColorRGB(pixel, int(r * 127.0), int(g * 127.0), int(b * 127.0))
 
 	##
@@ -136,6 +136,10 @@ class LEDStrip(object):
 			if self.debug: print '[show:LEDStrip] update leds'
 		else:
 			print '[show:LEDStrip] ERROR unable to update leds'
+
+	def reset(self):
+		self.setPixelBuffer([(0,0,0)])
+		self.show()
 
 
 if __name__ == "__main__":

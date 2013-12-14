@@ -2,22 +2,33 @@ from lib.ledstrip import LEDStrip
 from lib.animations import PulseAnimation
 
 import time
-
-anim = PulseAnimation({
-			"speed": {
-					"step": 4.0,
-					"max": 100.0
-				}
-			})
+import sys
 
 spidev = file("/dev/spidev0.0", "wb")
 leds = LEDStrip(pixels=32, spi=spidev)
-frame = 0
 
-while True:
-	frame += 1
-	buffer = anim.getFrame(frame)
-	leds.setPixelBuffer(buffer)
+def main():
+	anim = PulseAnimation({
+				"speed": {
+						"step": 4.0,
+						"max": 100.0
+					}
+				})
 
-	leds.show()
-	time.sleep(0.02)
+	
+	frame = 0
+
+	while True:
+		frame += 1
+		buffer = anim.getFrame(frame)
+		leds.setPixelBuffer(buffer)
+
+		leds.show()
+		time.sleep(0.02)
+
+if __name__ == "__main__":
+	try:
+		main()
+	except KeyboardInterrupt:
+		leds.reset()
+		sys.exit()
