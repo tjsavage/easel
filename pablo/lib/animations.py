@@ -35,3 +35,13 @@ class PulseAnimation(Animation):
 							self.config["color"][1] * amplitude,
 							self.config["color"][2] * amplitude))
 		return buffer
+
+class SlowPulseAnimation(PulseAnimation):
+	def __init__(self, config):
+		PulseAnimation.__init__(self, config)
+		self.config["speed"]["max"] = 200
+
+class FastPulseAnimation(PulseAnimation):
+	def __init__(self, config):
+		PulseAnimation.__init__(self, config)
+		self.config["speed"]["step"] = 3.0 

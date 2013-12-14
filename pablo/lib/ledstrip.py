@@ -124,7 +124,7 @@ class LEDStrip(object):
 	##
 	# numPixels 	Returns the length in pixels of the LED strip
 	def numPixels(self):
-		if self.debug: print "[numPixels:LEDPixels] get pixel count ", ( (len(self.pixels) - 1) / 3 )
+		if self.debug: print "[numPixels:LEDStrip] get pixel count ", ( (len(self.pixels) - 1) / 3 )
 		return ( (len(self.pixels) - 1) / 3 )
 
 	##
@@ -138,7 +138,7 @@ class LEDStrip(object):
 			print '[show:LEDStrip] ERROR unable to update leds'
 
 	def reset(self):
-		print "[reset:LEDPixels] resetting pixels"
+		print "[reset:LEDStrip] resetting pixels"
 		self.setPixelBuffer([(0,0,0)])
 		self.show()
 
