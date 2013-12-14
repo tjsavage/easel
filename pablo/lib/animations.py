@@ -27,7 +27,7 @@ class PulseAnimation(Animation):
 
 	def getFrame(self, frame):
 		buffer = []
-		position = (frame * step % self.config["speed"]["max"]) / self.config["speed"]["max"]
+		position = (frame * self.config["speed"]["step"] % self.config["speed"]["max"]) / self.config["speed"]["max"]
 		angle = position * 2 * math.pi
 		amplitude = (math.sin(angle) + 1) / 2.0
 		for i in range(self.config["pixels"]):
