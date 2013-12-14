@@ -3,7 +3,12 @@ from lib.animations import PulseAnimation
 
 import time
 
-anim = PulseAnimation(None)
+anim = PulseAnimation({
+			"speed": {
+					"step": 4.0,
+					"max": 100.0
+				}
+			})
 
 spidev = file("/dev/spidev0.0", "wb")
 leds = LEDStrip(pixels=32, spi=spidev)
