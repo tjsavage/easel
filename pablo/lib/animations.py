@@ -1,7 +1,7 @@
 import math
 
 class Animation():
-	def __init__(self, config):
+	def __init__(self, config=None):
 		self.config = config
 		if not self.config:
 			self.config = {}
