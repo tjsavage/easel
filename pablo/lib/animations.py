@@ -14,7 +14,7 @@ class Animation():
 
 class PulseAnimation(Animation):
 	def __init__(self, config):
-		Animation.__init__(config)
+		Animation.__init__(self, config)
 
 		if "color" not in self.config:
 			self.config["color"] = (1.0, 1.0, 1.0)
