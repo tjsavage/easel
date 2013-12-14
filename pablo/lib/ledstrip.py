@@ -138,6 +138,7 @@ class LEDStrip(object):
 			print '[show:LEDStrip] ERROR unable to update leds'
 
 	def reset(self):
+		print "[reset:LEDPixels] resetting pixels"
 		self.setPixelBuffer([(0,0,0)])
 		self.show()
 
