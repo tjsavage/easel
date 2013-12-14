@@ -13,7 +13,7 @@ class Animation():
 		raise Exception("Not implemented getFrame")
 
 class PulseAnimation(Animation):
-	def __init__(self, config):
+	def __init__(self, config=None):
 		Animation.__init__(self, config)
 
 		if "color" not in self.config:
@@ -37,11 +37,11 @@ class PulseAnimation(Animation):
 		return buffer
 
 class SlowPulseAnimation(PulseAnimation):
-	def __init__(self, config):
+	def __init__(self, config=None):
 		PulseAnimation.__init__(self, config)
 		self.config["speed"]["max"] = 200
 
 class FastPulseAnimation(PulseAnimation):
-	def __init__(self, config):
+	def __init__(self, config=None):
 		PulseAnimation.__init__(self, config)
 		self.config["speed"]["step"] = 3.0 
