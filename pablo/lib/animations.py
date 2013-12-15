@@ -105,6 +105,9 @@ class KeyFrameAnimation(Animation):
 								"max": 100.0
 							}
 
+		if "loop" not in self.config:
+			self.config["loop"] = True
+
 		if "keyFrames" not in self.config:
 			self.config["keyFrames"] = []
 			self.config["keyFrames"].append(KeyFrame((1,0,0), 0.00))
@@ -115,7 +118,10 @@ class KeyFrameAnimation(Animation):
 			self.config["keyFrames"].append(KeyFrame((1,0,1), 0.90))
 
 	def getFrame(self, frame):
-		timing = ((frame * self.config["speed"]["step"]) % self.config["speed"]["max"]) / self.config["speed"]["max"] * 1.0
+		if self.config["loop"]:
+			timing = ((frame * self.config["speed"]["step"]) % self.config["speed"]["max"]) / self.config["speed"]["max"] * 1.0
+		else:
+			timing = (frame * self.config["speed"]["step"]) / self.config["speed"]["max"] * 1.0
 		prevFrame = self.config["keyFrames"][0]
 		nextFrame = None
 		for keyFrame in self.config["keyFrames"][1:]:
@@ -125,7 +131,10 @@ class KeyFrameAnimation(Animation):
 				nextFrame = keyFrame
 				break
 		if not nextFrame:
-			nextFrame = self.config["keyFrames"][0]
+			if self.config["loop"]:
+				nextFrame = self.config["keyFrames"][0]
+			else:
+				nextFrame = prevFrame
 
 		interpolationRatio =  (timing - prevFrame.timing) / (nextFrame.timing - prevFrame.timing)
 		r = (nextFrame.rgb[0] - prevFrame.rgb[0]) * interpolationRatio + prevFrame.rgb[0]
