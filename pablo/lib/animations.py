@@ -133,10 +133,11 @@ class KeyFrameAnimation(Animation):
 		if not nextFrame:
 			if self.config["loop"]:
 				nextFrame = self.config["keyFrames"][0]
-			else:
-				nextFrame = prevFrame
 
-		interpolationRatio =  (timing - prevFrame.timing) / (nextFrame.timing - prevFrame.timing)
+		if nextFrame:
+			interpolationRatio =  (timing - prevFrame.timing) / (nextFrame.timing - prevFrame.timing)
+		else:
+			interpolationRatio = 0.0
 		r = (nextFrame.rgb[0] - prevFrame.rgb[0]) * interpolationRatio + prevFrame.rgb[0]
 		g = (nextFrame.rgb[1] - prevFrame.rgb[1]) * interpolationRatio + prevFrame.rgb[1]
 		b = (nextFrame.rgb[2] - prevFrame.rgb[2]) * interpolationRatio + prevFrame.rgb[2]
