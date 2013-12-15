@@ -142,9 +142,9 @@ class SunriseAnimation(KeyFrameAnimation):
 		self.config["keyFrames"] = []
 		self.config["keyFrames"].append(KeyFrame((0,0,0), 0.00))
 		self.config["keyFrames"].append(KeyFrame((0.09,0.04,0.17), 0.20))
-		self.config["keyFrames"].append(KeyFrame((0.45,0.04,0.45), 0.40))
-		self.config["keyFrames"].append(KeyFrame((0.62,0.25,0.25), 0.60))
-		self.config["keyFrames"].append(KeyFrame((0.76,0.45,0.25), 0.70))
+		self.config["keyFrames"].append(KeyFrame((0.25,0.02,0.25), 0.40))
+		self.config["keyFrames"].append(KeyFrame((0.32,0.15,0.15), 0.60))
+		self.config["keyFrames"].append(KeyFrame((0.46,0.35,0.19), 0.70))
 		self.config["keyFrames"].append(KeyFrame((0.92,0.85,0.33), 0.80))
 		self.config["keyFrames"].append(KeyFrame((1.0,0.96,0.85), 0.90))
 
