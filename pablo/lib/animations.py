@@ -97,7 +97,7 @@ class RunnerAnimation(Animation):
 
 class KeyFrameAnimation(Animation):
 	def __init__(self, config=None):
-		Animation.__ini__(self, config)
+		Animation.__init__(self, config)
 
 		if "keyFrames" not in self.config:
 			self.config["keyFrames"] = []
