@@ -137,6 +137,8 @@ class KeyFrameAnimation(Animation):
 
 class SunriseAnimation(KeyFrameAnimation):
 	def __init__(self, config=None):
+		KeyFrameAnimation.__init__(self, config)
+		
 		if "keyFrames" not in self.config:
 			self.config["keyFrames"] = []
 			self.config["keyFrames"].append(KeyFrame((0,0,0), 0.00))
