@@ -138,6 +138,7 @@ class KeyFrameAnimation(Animation):
 			interpolationRatio =  (timing - prevFrame.timing) / (nextFrame.timing - prevFrame.timing)
 		else:
 			interpolationRatio = 0.0
+			nextFrame = prevFrame
 		r = (nextFrame.rgb[0] - prevFrame.rgb[0]) * interpolationRatio + prevFrame.rgb[0]
 		g = (nextFrame.rgb[1] - prevFrame.rgb[1]) * interpolationRatio + prevFrame.rgb[1]
 		b = (nextFrame.rgb[2] - prevFrame.rgb[2]) * interpolationRatio + prevFrame.rgb[2]
