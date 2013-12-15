@@ -68,9 +68,9 @@ class RunnerAnimation(Animation):
 	def getFrame(self, frame):
 		buffer = []
 
-		headLocation = (frame * self.config["speed"]["step"])
-		tailLocation = headLocation - self.config["tail"]
-		frameOrigin = headLocation - (headLocation % self.config["pixels"])
+		headLocation = int((frame * self.config["speed"]["step"]))
+		tailLocation = int(headLocation - self.config["tail"])
+		frameOrigin = int(headLocation - (headLocation % self.config["pixels"]))
 
 		for i in range(frameOrigin, frameOrigin + self.config["pixels"]):
 			if i > tailLocation and i <= headLocation:
