@@ -99,6 +99,12 @@ class KeyFrameAnimation(Animation):
 	def __init__(self, config=None):
 		Animation.__init__(self, config)
 
+		if "speed" not in self.config:
+			self.config["speed"] = {
+								"step": 1.0,
+								"max": 100.0
+							}
+							
 		if "keyFrames" not in self.config:
 			self.config["keyFrames"] = []
 			self.config["keyFrames"].append(KeyFrame((1,0,0), 0.15))
