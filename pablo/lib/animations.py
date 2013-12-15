@@ -20,6 +20,13 @@ class Animation():
 	def multiplyRGB(self, rgb, amplitude):
 		return (rgb[0] * amplitude, rgb[1] * amplitude, rgb[2] * amplitude)
 
+	def interpolate(self, rgb1, rgb2, ratio):
+		r = (rgb2[0] - rgb1[0]) * ratio + rgb1[0]
+		g = (rgb2[1] - rgb1[1]) * ratio + rgb1[1]
+		b = (rgb2[2] - rgb1[2]) * ratio + rgb1[2]
+
+		return (r, g, b)
+
 	def getFilledFrame(self, rgb):
 		buffer = []
 		for i in range(self.config["pixels"]):
@@ -33,6 +40,9 @@ class PulseAnimation(Animation):
 		if "color" not in self.config:
 			self.config["color"] = (1.0, 1.0, 1.0)
 
+		if "backgroundColor" not in self.config:
+			self.config["backgroundColor"] = (0.0, 0.0, 0.0)
+
 		if "speed" not in self.config:
 			self.config["speed"] = {
 								"step": 1.0,
@@ -40,13 +50,10 @@ class PulseAnimation(Animation):
 							}
 
 	def getFrame(self, frame):
-		buffer = []
 		position = (frame * self.config["speed"]["step"] % self.config["speed"]["max"]) / self.config["speed"]["max"]
 		angle = position * 2 * math.pi
 		amplitude = (math.sin(angle) + 1) / 2.0
-		for i in range(self.config["pixels"]):
-			buffer.append(self.multiplyRGB(self.config["color"], amplitude))
-		return buffer
+		return self.getFilledFrame(self.interpolate(self.config["color"], self.config["backgroundColor"], amplitude))
 
 class SlowPulseAnimation(PulseAnimation):
 	def __init__(self, config=None):
@@ -161,3 +168,9 @@ class SunriseAnimation(KeyFrameAnimation):
 
 		self.config["loop"] = False
 
+class NightLightAnimation(PulseAnimation):
+	def __init__(self, config=None):
+		PulseAnimation.__init__(self, config)
+
+		self.config["color"] = (0.7, 0.2, 0.15)
+		self.config["backgroundColor"] = (0.42, 0.1, 0.1)
