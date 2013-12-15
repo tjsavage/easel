@@ -135,5 +135,15 @@ class KeyFrameAnimation(Animation):
 		return self.getFilledFrame((r, g, b))
 
 
-
+class SunriseAnimation(KeyFrameAnimation):
+	def __init__(self, config=None):
+		if "keyFrames" not in self.config:
+			self.config["keyFrames"] = []
+			self.config["keyFrames"].append(KeyFrame((0,0,0), 0.00))
+			self.config["keyFrames"].append(KeyFrame((0.09,0.04,0.17), 0.20))
+			self.config["keyFrames"].append(KeyFrame((0.45,0.04,0.45), 0.40))
+			self.config["keyFrames"].append(KeyFrame((0.62,0.25,0.25), 0.60))
+			self.config["keyFrames"].append(KeyFrame((0.76,0.45,0.25), 0.70))
+			self.config["keyFrames"].append(KeyFrame((0.92,0.85,0.33), 0.80))
+			self.config["keyFrames"].append(KeyFrame((1.0,0.96,0.85), 0.40))
 
