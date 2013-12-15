@@ -69,13 +69,13 @@ class RunnerAnimation(Animation):
 		buffer = []
 
 		headLocation = int((frame * self.config["speed"]["step"])) % self.config["pixels"]
-		tailLocation = int((headLocation - self.config["tail"]) % self.config["pixels"])
+		tailLocation = int((headLocation - self.config["tail"])) % self.config["pixels"]
 
 		for i in range(self.config["pixels"]):
 			if i > tailLocation and i <= headLocation:
 				amplitude = (self.config["tail"] - (headLocation - i)) / self.config["tail"] * 1.0
 				buffer.append(self.multiplyRGB(self.config["color"], amplitude))
-			elif i > tailLocation and tailLocation > headLocation:
+			elif (i > tailLocation and tailLocation > headLocation) or (i <= headLocation and tailLocation > headLocation):
 				amplitude = (self.config["tail"] - (headLocation + self.config["pixels"] - i)) / self.config["tail"] * 1.0
 				buffer.append(self.multiplyRGB(self.config["color"], amplitude))
 			else:
