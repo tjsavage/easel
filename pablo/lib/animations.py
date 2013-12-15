@@ -121,7 +121,7 @@ class KeyFrameAnimation(Animation):
 		if self.config["loop"]:
 			timing = ((frame * self.config["speed"]["step"]) % self.config["speed"]["max"]) / self.config["speed"]["max"] * 1.0
 		else:
-			timing = (frame * self.config["speed"]["step"]) / self.config["speed"]["max"] * 1.0
+			timing = min((frame * self.config["speed"]["step"]) / self.config["speed"]["max"] * 1.0, 1.0)
 		prevFrame = self.config["keyFrames"][0]
 		nextFrame = None
 		for keyFrame in self.config["keyFrames"][1:]:
