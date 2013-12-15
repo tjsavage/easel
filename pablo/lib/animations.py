@@ -104,11 +104,11 @@ class KeyFrameAnimation(Animation):
 								"step": 1.0,
 								"max": 100.0
 							}
-							
+
 		if "keyFrames" not in self.config:
 			self.config["keyFrames"] = []
-			self.config["keyFrames"].append(KeyFrame((1,0,0), 0.15))
-			self.config["keyFrames"].append(KeyFrame((1,1,0), 0.30))
+			self.config["keyFrames"].append(KeyFrame((1,0,0), 0.00))
+			self.config["keyFrames"].append(KeyFrame((1,1,0), 0.20))
 			self.config["keyFrames"].append(KeyFrame((0,1,0), 0.45))
 			self.config["keyFrames"].append(KeyFrame((0,1,1), 0.60))
 			self.config["keyFrames"].append(KeyFrame((0,0,1), 0.75))
@@ -116,14 +116,14 @@ class KeyFrameAnimation(Animation):
 
 	def getFrame(self, frame):
 		timing = ((frame * self.config["speed"]["step"]) % self.config["speed"]["max"]) / self.config["speed"]["max"] * 1.0
-		prevFrame = None
+		prevFrame = self.config["keyFrames"][0]
 		nextFrame = None
-		for keyFrame in self.config["keyFrames"]:
-			if keyFrame.timing < timing:
-				if prevFrame:
-					nextFrame = keyFrame
-					break
+		for keyFrame in self.config["keyFrames"][1:]:
+			if keyFrame.timing <= timing:
 				prevFrame = keyFrame
+			if keyFrame.timing > timing:
+				nextFrame = keyFrame
+				break
 		if not nextFrame:
 			nextFrame = self.config["keyFrames"][0]
 
