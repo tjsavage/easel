@@ -1,3 +1,4 @@
+config.js
 *.db
 *.log
 *.DS_Store
