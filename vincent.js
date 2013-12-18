@@ -6,7 +6,7 @@ var http = require("http");
 module.exports = function(app) {
 	// all environments
 	app.set('views', path.join(__dirname, 'views'));
-	app.set('view engine', 'jade');
+	app.set('view engine', 'ejs');
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
 	app.use(express.json());
@@ -15,6 +15,9 @@ module.exports = function(app) {
 	app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 	app.use(express.static(path.join(__dirname, 'public')));
 
+	app.get('/', function(req, res) {
+		res.render('index');
+	});
 	app.get('/doorbell/twilio', doorbell.twilio);
 	app.get('/doorbell/lock', doorbell.get_lock);
 	app.post('/doorbell/lock', doorbell.post_lock);

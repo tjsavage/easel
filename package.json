@@ -11,6 +11,8 @@
     "stylus": "*",
     "twilio": "*",
     "mocha": "*",
-    "should": "*"
+    "should": "*",
+    "socket.io": "*",
+    "socket.io-client": "*"
   }
 }
