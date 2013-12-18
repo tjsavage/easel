@@ -28,6 +28,19 @@ var client2Config = {
 	}
 };
 
+var client3Config = {
+	"me": {
+		"name": "client3",
+		"type": "client",
+		"port": 3004,
+		"ip": "localhost"
+	},
+	"server": {
+		"port": 3001,
+		"ip": "127.0.0.1"
+	}
+};
+
 
 
 describe("skynet", function() {
@@ -49,13 +62,28 @@ describe("skynet", function() {
 	it("should broadcast an event to all clients", function(done) {
 		var client1 = new Skynet(client1Config);
 
-		client1.on("event", function(data) {
+		client1.on("message", function(data) {
 			data.type.should.equal("a cool event");
 			done();
 		});
 
 		var client2 = new Skynet(client2Config);
 
-		client2.emit("event", {type: "a cool event"});
+		client2.emit("message", {type: "a cool event"});
 	});
+
+	/* For later
+	it("should broadcast private events only to the specified client", function(done) {
+		var client1 = new Skynet(client1Config);
+		var client2 = new Skynet(client2Config);
+		var client3 = new Skynet(client3Config);
+
+		client2.on("private event", function(data) {
+			data.subject.should.equal("here");
+			done();
+		});
+
+		client1.emit("private event", {to: "client2", subject: "here"});
+
+	}); */
 });

@@ -1,16 +1,11 @@
-
-/**
- * Module dependencies.
- */
- var config;
+var config;
 if (process.argv.length > 2) {
-	config = require('./' + process.argv[2])
+	config = require('./' + process.argv[2]);
 } else {
 	config = require('./config');
 }
 
 var express = require('express');
-var path = require('path');
 
 var app = express();
 app.config = config;
@@ -23,6 +18,9 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-require("./" + config.name)(app);
+console.log(config);
+config.modules.forEach(function(module) {
+	require("./modules/" + module.type)(app, module.options);
+});
 
 

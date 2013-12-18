@@ -1,4 +1,3 @@
-var doorbell = require("./modules/doorbell");
 var path = require("path");
 var express = require("express");
 var http = require("http");
@@ -14,13 +13,6 @@ module.exports = function(app) {
 	app.use(express.methodOverride());
 	app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 	app.use(express.static(path.join(__dirname, 'public')));
-
-	app.get('/', function(req, res) {
-		res.render('index');
-	});
-	app.get('/doorbell/twilio', doorbell.twilio);
-	app.get('/doorbell/lock', doorbell.get_lock);
-	app.post('/doorbell/lock', doorbell.post_lock);
 
 	http.createServer(app).listen(app.get('port'), function(){
 	  console.log('Express server listening on port ' + app.get('port'));
