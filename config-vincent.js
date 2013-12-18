@@ -1,5 +1,5 @@
 var config = {
-	"name": "vincent"
+	"name": "vincent",
 	"ip": "10.0.1.19",
 	"modules": [
 		{
