@@ -1,6 +1,6 @@
 var config = {
-	"name": "pablo"
-	"ip": "10.0.1.21",
+	"name": "vincent"
+	"ip": "10.0.1.19",
 	"modules": [
 		{
 			"type": "doorbell",
