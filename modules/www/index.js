@@ -27,6 +27,6 @@ module.exports = function(app, options) {
 		socket.on("message", function(data) {
 			skynet.emitMessage(data);
 		});
-	})
+	});
 }
 
