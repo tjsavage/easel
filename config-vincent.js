@@ -9,19 +9,20 @@ var config = {
 			}
 		},
 		{
-			"type": "logic",
+			"type": "www",
 			"options": {
-				"conditionals": [
-					{
-						"if": {
-							"from": "bed_motion_detector"
-						},
-						"then": {
-							"to": "bed_led_strip",
-							"body": "nightlight"
-						}
+				"skynet": {
+					"me": {
+						"type": "client",
+						"name": "www",
+						"port": 3002
+					},
+					"server": {
+						"name": "vincent",
+						"port": 3001,
+						"ip": "10.0.1.19"
 					}
-				]
+				}
 			}
 		}
 	]

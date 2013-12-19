@@ -1,24 +1,32 @@
 var express = require("express");
 var path = require("path");
-var http = require("http");
+var Skynet = require("../skynet");
+
 /**
  * Module dependencies.
  */
-module.exports = function(app) {
+module.exports = function(app, options) {
+	var io = require("socket.io").listen(app);
 	// all environments
-	app.set('views', path.join(__dirname, 'views'));
-	app.set('view engine', 'jade');
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
 	app.use(express.json());
 	app.use(express.urlencoded());
 	app.use(express.methodOverride());
 	app.use(require('stylus').middleware(path.join(__dirname, 'public')));
-	app.use(express.static(path.join(__dirname, 'public')));
-	
 
-	http.createServer(app).listen(app.get('port'), function(){
-	  console.log('Express server listening on port ' + app.get('port'));
+
+	app.get("/", function(req, res) {
+		res.render('index', {});
 	});
+
+	var skynet = new Skynet(options.skynet);
+
+	io.sockets.on('connection', function(socket) {
+		socket.emit("site connected", {});
+		socket.on("message", function(data) {
+			skynet.emitMessage(data);
+		});
+	})
 }
 
