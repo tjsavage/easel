@@ -19,10 +19,6 @@ var doorbell = function(app, options) {
     app.get('/doorbell/twilio', routes.get_twilio);
     app.get('/doorbell/lock', routes.get_lock);
     app.post('/doorbell/lock', routes.post_lock);
-
-    http.createServer(app).listen(app.get('port'), function(){
-      console.log('Express server listening on port ' + app.get('port'));
-    });
 }
 
 

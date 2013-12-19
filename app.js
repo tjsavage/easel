@@ -23,4 +23,8 @@ config.modules.forEach(function(module) {
 	require("./modules/" + module.type)(app, module.options);
 });
 
+http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});
+
 
