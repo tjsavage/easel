@@ -7,18 +7,25 @@ var ledStrip = function(app, options) {
 	this.skynet = new Skynet(options.skynet);
 	this.lights = new LightStrips('/dev/spidev0.0', options.leds);
 
-	this.skynet.onMessage(this.receivedMessage);
+	this.skynet.setStatusGetter(this.getStatus);
+	this.skynet.onMessageToMe(this.receivedMessageToMe);
+	this.status = {};
 };
 
-ledStrip.prototype.receivedMessage = function(message) {
-	if (message.to != options.name) {
-		return;
-	}
+ledStrip.prototype.getStatus = function() {
+	return [
+		{
+			"name": "power",
+			"type": "toggle",
+			"displayName": "power",
+			"status": this.status.power
+		}
+	]
+}
 
-	if (message.subject == "animate") {
-		this.animate(message.body);
-	}
-};
+ledStrip.prototype.receivedMessageToMe = function(data) {
+	this.status = data;
+}
 
 ledStrip.prototype.animate = function(animationName) {
 	var animation = animations.load(animationName, this.lights, this.options.leds);

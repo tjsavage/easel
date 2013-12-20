@@ -24,6 +24,14 @@ var Skynet = function(config) {
             socket.on("message", function(data) {
                 socket.broadcast.emit('message', data);
             });
+
+            socket.on("get:status", function(data) {
+                socket.broadcast.emit("get:status", data);
+            });
+
+            socket.on("broadcast:status", function(data) {
+                socket.broadcast.emit("broadcast:status", data);
+            });
         });
     }
 };
@@ -42,6 +50,36 @@ Skynet.prototype.on = function(type, handler) {
 
 Skynet.prototype.onMessage = function(handler) {
     this.on("message", handler);
+};
+
+Skynet.prototype.onMessageToMe = function(handler) {
+    var myName = this.config.me.name;
+    this.on("message", function(data) {
+        if (data.to === myName) {
+            handler(data);
+        }
+    });
+}
+
+Skynet.prototype.onSetStatus = function(handler) {
+    var myName = this.config.me.name;
+
+    this.on("set:status", function(data) {
+        if (data.to === myName)
+    });
+}
+
+Skynet.prototype.setStatusGetter = function(handler) {
+    var status = handler();
+    this.emit("broadcast:status", status);
+};
+
+Skynet.prototype.requestStatus = function(data) {
+    this.emit("get:status", data);
+};
+
+Skynet.prototype.onStatus = function(handler, data) {
+    this.on("broadcast:status", handler);
 };
 
 Skynet.prototype.disconnect = function() {

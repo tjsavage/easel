@@ -72,6 +72,39 @@ describe("skynet", function() {
 		client2.emit("message", {type: "a cool event"});
 	});
 
+	it("should get and broadcast statuses", function(done) {
+		var client1 = new Skynet(client1Config);
+		var client2 = new Skynet(client2Config);
+		var client3 = new Skynet(client3Config);
+
+		client1.setStatusGetter(function() {
+			return {
+				"from": "client1",
+				"status": 1
+			}
+		});
+
+		client2.setStatusGetter(function() {
+			return {
+				"from": "client2",
+				"status": 2
+			}
+		});
+
+		var numStatus = 0;
+		client3.onStatus(function(data) {
+			if (data.status == 1 || data.status == 2) {
+				numStatus++;
+			}
+			
+			if (numStatus == 2) {
+				done();
+			}
+		});
+
+		client3.requestStatus();
+	});
+
 	/* For later
 	it("should broadcast private events only to the specified client", function(done) {
 		var client1 = new Skynet(client1Config);

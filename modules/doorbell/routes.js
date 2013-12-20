@@ -5,6 +5,8 @@ var TWILIO_ACCOUNT_SID = "AC4cffdadfc3c27989f8371c82970b07d1";
 var TWILIO_AUTH_TOKEN = "88fc628c1b03dc409f7c7515097f51c4";
 var twilio_api = require('twilio');
 
+var LOCKED = true;
+
 var DOORBELL_FILE = __dirname + '/misc/doorbell-2.wav';
 var twilio_client = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
@@ -24,17 +26,16 @@ exports.get_twilio = function(req, res) {
 };
 
 exports.get_lock = function(req, res) {
-	res.send(200, {status: true});
+	res.send(200, {status: LOCKED});
 };
 
 exports.post_lock = function(req, res) {
 	var postData = '';
-	var lockStatus;
 
 	if (req.body.status === 0 || req.body.status === "false" || req.body.status === false || req.body.status === '0') {
-		lockStatus = false;
+		LOCKED = false;
 	} else {
-		lockStatus = true;
+		LOCKED = true;
 	}
 
 	//fill this in with db stuff

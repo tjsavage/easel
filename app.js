@@ -11,7 +11,10 @@ if (process.argv.length > 2) {
 var express = require('express');
 
 var app = express();
+var server = http.createServer(app);
+
 app.config = config;
+app.server = server;
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -29,8 +32,6 @@ config.modules.forEach(function(module) {
 	require("./modules/" + module.type)(app, module.options);
 });
 
-http.createServer(app).listen(app.get('port'), function(){
+server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
-
-

@@ -6,7 +6,7 @@ var Skynet = require("../skynet");
  * Module dependencies.
  */
 module.exports = function(app, options) {
-	var io = require("socket.io").listen(app);
+	var io = require("socket.io").listen(app.server);
 	// all environments
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
