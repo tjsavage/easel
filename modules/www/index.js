@@ -20,7 +20,7 @@ module.exports = function(app, options) {
 		res.render('index', {});
 	});
 
-	var skynet = new Skynet(options.skynet);
+	var skynet = new Skynet(this, options.skynet);
 
 	io.sockets.on('connection', function(socket) {
 		socket.emit("site connected", {});

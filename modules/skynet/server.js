@@ -9,4 +9,4 @@ var serverConfig = {
 	}
 };
 
-var server = new Skynet(serverConfig);
+var server = new Skynet(null, serverConfig);

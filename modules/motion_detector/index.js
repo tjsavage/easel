@@ -2,7 +2,7 @@ var gpio = require("gpio");
 
 var motionDetector = function(app, options) {
 	this.options = options;
-	this.skynet = new Skynet(options.skynet);
+	this.skynet = new Skynet(this, options.skynet);
 
 	this.gpioPin = gpio.export(options.pin, {
 		direction: "in",

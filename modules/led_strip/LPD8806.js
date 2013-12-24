@@ -1,7 +1,5 @@
-var spi = require('spi');
 
-
-function LightStrips(device, num_pixels) {
+function LightStrips(device, num_pixels, spiDevice) {
     this.gamma = [];
     
     for(var i = 0; i <= 255; i++){
@@ -13,12 +11,7 @@ function LightStrips(device, num_pixels) {
     this.num_pixels = num_pixels;
     this.pixel_buffer = new Buffer(num_pixels*3);
     this.off_buffer = new Buffer(num_pixels*3);
-    this.device = new spi.Spi(device, {
-                                        //"mode": spi.MODE['MODE_0'],
-                                        //"chipSelect": spi.CS['none'],
-                                        //"maxSpeed": 1000000,
-                                        //"bitOrder":spi.ORDER.msb
-                                    });
+    this.device = spiDevice;
     this.device.open();
     this.pixel_buffer.fill(0);
     this.off();
