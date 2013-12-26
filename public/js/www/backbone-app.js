@@ -17,6 +17,10 @@ Easel.Dashboard = Backbone.Model.extend({
 		this.socket.on('broadcast:state', function(data) {
 			T.onBroadcastState(data);
 		});
+
+		this.socket.on("error", function(err) {
+			T.trigger("error", err);
+		});
 	},
 
 	getStates: function() {
@@ -98,6 +102,7 @@ Easel.ModuleView = Backbone.View.extend({
 Easel.DashboardView = Backbone.View.extend({
 	initialize: function() {
 		this.model.on("add:module", this.onAddModule, this);
+		this.model.on("error", onError, this);
 	},
 
 	onAddModule: function(module) {
@@ -105,6 +110,10 @@ Easel.DashboardView = Backbone.View.extend({
 			model: module
 		});
 		this.$el.append(newModuleView.render());
+	}
+
+	onError: function(err) {
+		console.log("socket error");
 	}
 });
 
