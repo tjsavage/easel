@@ -7,6 +7,7 @@ Easel.Dashboard = Backbone.Model.extend({
 		this.socket = io.connect('http://127.0.0.1');
 
 		this.on("refresh", this.refresh, this);
+		this.on("add:module", this.onAddModule, this);
 
 		var T = this;
 		this.socket.on('broadcast:state', function(data) {
@@ -19,11 +20,14 @@ Easel.Dashboard = Backbone.Model.extend({
 	},
 
 	onBroadcastState: function(message) {
+		console.log("looking for",message.from);
+		console.log("in",this.modules);
 		var module = this.modules[message.from];
 
 		if (!module) {
-			module = new Easel.ModuleModel(message.from);
-			this.modules[message.from] = module;
+			console.log("creating new module",message.body)
+			module = new Easel.ModuleModel(message.body);
+			this.trigger("add:module", module);
 		}
 			
 		module.set(message.body);
@@ -32,6 +36,10 @@ Easel.Dashboard = Backbone.Model.extend({
 	refresh: function() {
 		console.log("dashboard refresh triggered");
 		this.getStates();
+	},
+
+	onAddModule: function(module) {
+		this.modules[module.get("name")] = module;
 	}
 
 
@@ -51,7 +59,26 @@ Easel.ModuleView = Backbone.View.extend({
 	tagName: "div",
 	className: "module",
 	initialize: function() {
-		console.log(this.model.type);
+		console.log(this.model.get("type"));
+		this.template = _.template($("#template-" + this.model.get("type")).html());
+	},
+
+	render: function() {
+		this.$el.html(this.template(this.model.toJSON()));
+		return this.el;
+	}
+});
+
+Easel.DashboardView = Backbone.View.extend({
+	initialize: function() {
+		this.model.on("add:module", this.onAddModule, this);
+	},
+
+	onAddModule: function(module) {
+		var newModuleView = new Easel.ModuleView({
+			model: module
+		});
+		this.$el.append(newModuleView.render());
 	}
 });
 
@@ -59,6 +86,10 @@ Easel.ModuleView = Backbone.View.extend({
 
 $(function() {
 	var Dashboard = new Easel.Dashboard();
+	var DashboardView = new Easel.DashboardView({
+		model: Dashboard,
+		el: $("#dashboard")
+	});
 
 	$("#refresh-button").click(function() {
 		console.log("refresh clicked");

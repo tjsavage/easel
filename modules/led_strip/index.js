@@ -22,6 +22,7 @@ var ledStrip = function(app, options) {
 
 	this.state = {
 		"name": this.options.skynet.me.name,
+		"type": "led_strip",
 		"power": false
 		/*
 		"color": {
