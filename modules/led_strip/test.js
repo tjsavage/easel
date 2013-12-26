@@ -103,11 +103,8 @@ describe("led_strip", function() {
 			if (data.from === ledConfig.name) {
 				if (!receivedLedState) {
 					data.body.power.should.equal(false);
-					client1.emitMessage({
-						"to": ledConfig.name,
-						"body": {
+					client1.setState(ledConfig.name, {
 							"power": true
-						}
 					});
 					receivedLedState = true;
 
@@ -124,8 +121,43 @@ describe("led_strip", function() {
 		});
 
 		client1.requestState();
+	});
 
-		
+	it("should set the color when asked", function(done) {
+		var client1 = new Skynet(null, client1Config.skynet);
+		client1.context = client1;
+		var leds = new LedStrip(null, ledConfig);
+		leds.turnOn();
+
+		var receivedLedState = false;
+		client1.onReceiveState(function(data) {
+
+			if (data.from === ledConfig.name) {
+				if (!receivedLedState) {
+					data.body.power.should.equal(true);
+					client1.setState(ledConfig.name, {
+							"color": {
+								"r": 1,
+								"g": 2,
+								"b": 3
+							}
+					});
+					receivedLedState = true;
+
+					client1.requestState();
+				} else {
+					console.log("got body",data.body);
+					if (data.body.color.r == 1 && data.body.color.g == 2 && data.body.color.b == 3) {
+						leds.skynet.disconnect();
+						client1.disconnect();
+						done();
+					}
+					
+				}
+			}
+		});
+
+		client1.requestState();
 	});
 
 });

@@ -79,11 +79,11 @@ Skynet.prototype.onMessageToMe = function(handler) {
 };
 
 Skynet.prototype.onSetState = function(handler) {
-    var myName = this.config.me.name;
+    var T = this;
 
-    this.on("set:state", function(data) {
-        if (data.to === myName) {
-            //TODO: fill this in?
+    this.on("set:state", function(stateDataMessage) {
+        if (stateDataMessage.to === T.config.me.name) {
+            handler.call(T.context, stateDataMessage.body);
         }
     });
 };
@@ -102,6 +102,14 @@ Skynet.prototype.onGetState = function(handler) {
 
 Skynet.prototype.requestState = function(data) {
     this.emit("get:state", data);
+};
+
+Skynet.prototype.setState = function(name, stateData) {
+    this.emit("set:state", {
+        "to": name,
+        "from": this.config.me.name,
+        "body": stateData
+    });
 };
 
 Skynet.prototype.onReceiveState = function(handler) {
