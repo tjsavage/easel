@@ -38,12 +38,43 @@ var ledStrip = function(app, options) {
 		*/
 	};
 
+	this.turnOn = function() {
+		console.log("turning on");
+		this.setColor({
+			"r": 255,
+			"g": 255,
+			"b": 255
+		});
+		this.state.power = true;
+	};
+
+	this.turnOff = function() {
+		console.log("turning off");
+		this.lights.off();
+		this.state.power = false;
+	};
+
+	this.setColor = function(colorData) {
+		this.lights.all(colorData.r, colorData.g, colorData.b);
+		this.lights.sync();
+		this.state.power = true;
+		this.state.color = colorData;
+	};
+
+
+	this.animate = function(animationData) {
+		var animation = animations.load(animationName, this.lights, this.options.leds);
+		animation.start();
+	};
+
 	this.skynet.onGetState(function() {
 		return this.state;
 	});
 
 	this.skynet.onSetState(function(stateData) {
+		console.log("settingState", stateData);
 		if (typeof stateData.power !== "undefined") {
+			console.log("setting power",stateData.power);
 			if (this.state.power && !stateData.power) {
 				this.turnOff();
 			}
@@ -51,10 +82,12 @@ var ledStrip = function(app, options) {
 				this.turnOn();
 			}
 		}
-		if (typeof stateData.color !== "undefined") {
+		if (typeof stateData.color !== "undefined" && this.state.power) {
 			console.log("setting color",stateData.color);
 			this.setColor(stateData.color);
 		}
+
+		this.skynet.emitState(this.state);
 	});
 };
 
@@ -62,29 +95,5 @@ var ledStrip = function(app, options) {
 ledStrip.prototype.receivedMessageToMe = function(data) {
 };
 
-ledStrip.prototype.animate = function(animationData) {
-	var animation = animations.load(animationName, this.lights, this.options.leds);
-	animation.start();
-};
-
-ledStrip.prototype.setColor = function(colorData) {
-	this.lights.all(colorData.r, colorData.g, colorData.b);
-	this.lights.sync();
-	this.state.power = true;
-	this.state.color = colorData;
-};
-
-ledStrip.prototype.turnOff = function() {
-	this.lights.off();
-	this.state.power = false;
-};
-
-ledStrip.prototype.turnOn = function() {
-	this.setColor({
-		"r": 255,
-		"g": 255,
-		"b": 255
-	});
-};
 
 module.exports = ledStrip;

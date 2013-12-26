@@ -47,6 +47,13 @@ Skynet.prototype.emitMessage = function(data) {
     this.emit("message", data);
 };
 
+Skynet.prototype.emitState = function(stateData) {
+    this.emit("broadcast:state", {
+        "from": this.config.me.name,
+        "body": stateData
+    });
+}
+
 Skynet.prototype.on = function(type, handler) {
     var T = this;
     this.socket.on(type, function(data) {

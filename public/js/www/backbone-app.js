@@ -1,3 +1,7 @@
+_.templateSettings = {
+    interpolate : /\{\{(.+?)\}\}/g
+};
+
 var Easel = function() {
 };
 
@@ -20,13 +24,13 @@ Easel.Dashboard = Backbone.Model.extend({
 	},
 
 	onBroadcastState: function(message) {
-		console.log("looking for",message.from);
-		console.log("in",this.modules);
+		console.log("got state",message);
 		var module = this.modules[message.from];
 
 		if (!module) {
 			console.log("creating new module",message.body)
 			module = new Easel.ModuleModel(message.body);
+			module.socket = this.socket;
 			this.trigger("add:module", module);
 		}
 			
@@ -51,7 +55,17 @@ Easel.ModuleModel = Backbone.Model.extend({
 	},
 
 	onChange: function() {
-		console.log("changed ",this.get("name"));
+		console.log("changed ",this.get("name"),this.toJSON());
+	},
+
+	setState: function() {
+		var stateMessage = {
+			"from": "www-client",
+			"to": this.get("name"),
+			"body": this.toJSON()
+		};
+		console.log("sending set:state",stateMessage);
+		this.socket.emit("set:state", stateMessage);
 	}
 });
 
@@ -60,12 +74,24 @@ Easel.ModuleView = Backbone.View.extend({
 	className: "module",
 	initialize: function() {
 		console.log(this.model.get("type"));
-		this.template = _.template($("#template-" + this.model.get("type")).html());
+		this.template = Handlebars.compile($("#template-" + this.model.get("type")).html());
+		this.model.on("change", this.render, this);
 	},
 
 	render: function() {
+		console.log("rendering template with",this.model.toJSON());
 		this.$el.html(this.template(this.model.toJSON()));
 		return this.el;
+	},
+
+	events: {
+		"click #power": "togglePower"
+	},
+
+	togglePower: function() {
+		console.log("toggling power, was",this.model.get("power"));
+		this.model.set("power", !this.model.get("power"));
+		this.model.setState();
 	}
 });
 
