@@ -1,4 +1,4 @@
-<html>
+<html ng-controller="AppCtrl">
 	<head>
 		<title>Easel</title>
 
@@ -21,10 +21,15 @@
 					<li class="active"><a href="#">dashboard</a></li>
 					<li><a href="#">led strip</a></li>
 				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="#" id="refresh-button"><span class="glyphicon glyphicon-refresh"></span></a></li>
+				</ul>
 			</div>
 		</nav>
 
 		<div class="container">
+			<div>
+				<form ng-submit
 			<div class="module">
 				<div class="panel panel-default">
 					<div class="panel-heading">
@@ -41,7 +46,9 @@
 
 		<script src="/js/jquery-1.10.2.min.js"></script>
 		<script src="/js/bootstrap.min.js"></script>
-		<script src="/js/ember-1.2.0.js"></script>
+		<script src="/js/underscore.js"></script>
+		<script src="/js/backbone-min.js"></script>
+		<script src="/js/www/backbone-app.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 	</body>
 

@@ -4,3 +4,14 @@ Easel.Module = DS.Model.extend(
 	type: DS.attr('string'),
 	status: DS.attr()
 )
+
+Easel.Module.FIXTURES = [
+	{
+		name: "On/Off Module",
+		displayName; "On/Off Module",
+		type: "binary",
+		status: {
+			"power": false
+		}
+	}
+];

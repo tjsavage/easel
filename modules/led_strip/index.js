@@ -21,6 +21,7 @@ var ledStrip = function(app, options) {
 	this.lights = new LightStrips('/dev/spidev0.0', options.leds, spiDevice);
 
 	this.state = {
+		"name": this.options.skynet.me.name,
 		"power": false
 		/*
 		"color": {
@@ -35,29 +36,27 @@ var ledStrip = function(app, options) {
 		}
 		*/
 	};
-	this.skynet.onGetState(this.getState);
-	this.skynet.onSetState(this.setState);
-	this.skynet.onMessageToMe(this.receivedMessageToMe);
+
+	this.skynet.onGetState(function() {
+		return this.state;
+	});
+
+	this.skynet.onSetState(function(stateData) {
+		if (typeof stateData.power !== "undefined") {
+			if (this.state.power && !stateData.power) {
+				this.turnOff();
+			}
+			if (!this.state.power && stateData.power) {
+				this.turnOn();
+			}
+		}
+		if (typeof stateData.color !== "undefined") {
+			console.log("setting color",stateData.color);
+			this.setColor(stateData.color);
+		}
+	});
 };
 
-ledStrip.prototype.getState = function() {
-	return this.state;
-};
-
-ledStrip.prototype.setState = function(stateData) {
-	if (typeof stateData.power !== "undefined") {
-		if (this.state.power && !stateData.power) {
-			this.turnOff();
-		}
-		if (!this.state.power && stateData.power) {
-			this.turnOn();
-		}
-	}
-	if (typeof stateData.color !== "undefined") {
-		console.log("setting color",stateData.color);
-		this.setColor(stateData.color);
-	}
-};
 
 ledStrip.prototype.receivedMessageToMe = function(data) {
 };

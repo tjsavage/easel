@@ -27,6 +27,20 @@ module.exports = function(app, options) {
 		socket.on("message", function(data) {
 			skynet.emitMessage(data);
 		});
+		socket.on("set:state", function(data) {
+			skynet.emit("set:state", data);
+		});
+		socket.on("get:state", function(data) {
+			skynet.emit("get:state", data);
+		});
+
+		skynet.onReceiveState(function(message) {
+			socket.emit("broadcast:state", message);
+		});
+		/*
+		skynet.onGetState(function() {
+			return {};
+		});*/
 	});
 }
 

@@ -122,7 +122,7 @@ describe("led_strip", function() {
 
 		client1.requestState();
 	});
-
+	
 	it("should set the color when asked", function(done) {
 		var client1 = new Skynet(null, client1Config.skynet);
 		client1.context = client1;
@@ -159,5 +159,5 @@ describe("led_strip", function() {
 
 		client1.requestState();
 	});
-
+	
 });

@@ -19,6 +19,7 @@
     "easing": "0.0.3",
     "socket.io-client": "~0.9.11",
     "socket.io": "~0.9.16",
-    "serialport": "~1.1.3"
+    "serialport": "~1.1.3",
+    "sinon": "*"
   }
 }

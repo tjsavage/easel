@@ -90,8 +90,14 @@ Skynet.prototype.onSetState = function(handler) {
 
 Skynet.prototype.onGetState = function(handler) {
     var T = this;
+    console.log("setting onGetStateHandler for",T.config.me.name,handler);
+    this.onGetStateHandler = handler;
     this.on("get:state", function(data) {
-        var stateBody = handler.call(T.context);
+        if (!T.onGetStateHandler) {
+            console.log("ERROR! Didn't set the onGetState handler for",T.config.me.name);
+            return;
+        }
+        var stateBody = T.onGetStateHandler.call(T.context);
         var state = {
             "from": T.config.me.name,
             "body": stateBody
