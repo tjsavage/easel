@@ -85,7 +85,32 @@ Easel.ModuleView = Backbone.View.extend({
 	render: function() {
 		console.log("rendering template with",this.model.toJSON());
 		this.$el.html(this.template(this.model.toJSON()));
+		if (this.model.get("type") === "led_strip") {
+			this.renderLedStrip();
+		}
 		return this.el;
+	},
+
+	renderLedStrip: function() {
+		var model = this.model;
+		var T = this;
+		var rgbChange = function() {
+			T.model.set("color", {
+				"r": rSlider.getValue(),
+				"g": gSlider.getValue(),
+				"b": bSlider.getValue()
+			});
+			T.model.setState();
+		};
+		var rSlider = this.$el.find("#r").slider();
+		rSlider.on('slideStop', rgbChange);
+		rSlider = rSlider.data("slider");
+		var gSlider = this.$el.find("#g").slider();
+		gSlider.on('slideStop', rgbChange);
+		gSlider = gSlider.data('slider');
+		var bSlider = this.$el.find("#b").slider();
+		bSlider.on('slideStop', rgbChange);
+		bSlider = bSlider.data('slider');
 	},
 
 	events: {
@@ -102,7 +127,7 @@ Easel.ModuleView = Backbone.View.extend({
 Easel.DashboardView = Backbone.View.extend({
 	initialize: function() {
 		this.model.on("add:module", this.onAddModule, this);
-		this.model.on("error", onError, this);
+		this.model.on("error", this.onError, this);
 	},
 
 	onAddModule: function(module) {
@@ -110,7 +135,7 @@ Easel.DashboardView = Backbone.View.extend({
 			model: module
 		});
 		this.$el.append(newModuleView.render());
-	}
+	},
 
 	onError: function(err) {
 		console.log("socket error");

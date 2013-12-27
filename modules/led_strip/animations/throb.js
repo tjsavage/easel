@@ -21,17 +21,19 @@ function Throb(setter, num_pixels, start_color, end_color, duration, options)
     }
     this.step = 0;
     this.running = false;
+    this.startTime = null;
 }
 
 Throb.prototype.start = function() {
     //console.log(this.easing);
     this.running = true;
+    this.startTime = new Date();
     this.tick();
-}
+};
 
 Throb.prototype.stop = function() {
     this.running = false;
-}
+};
 
 Throb.prototype.calculate_single = function(start_value, end_value) {
     var retval = start_value + (end_value-start_value)*this.easing[this.step];

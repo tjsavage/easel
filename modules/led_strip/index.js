@@ -55,6 +55,7 @@ var ledStrip = function(app, options) {
 	};
 
 	this.setColor = function(colorData) {
+		console.log("setting color",colorData);
 		this.lights.all(colorData.r, colorData.g, colorData.b);
 		this.lights.sync();
 		this.state.power = true;
@@ -89,10 +90,6 @@ var ledStrip = function(app, options) {
 
 		this.skynet.emitState(this.state);
 	});
-};
-
-
-ledStrip.prototype.receivedMessageToMe = function(data) {
 };
 
 
