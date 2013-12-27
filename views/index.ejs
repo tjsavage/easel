@@ -39,24 +39,33 @@
 						<h3 class="panel-title">{{ name }}</h3>
 					</div>
 					<div class="panel-body">
-						<button type="button" id="power" class="btn btn-lg {{#if power }}btn-success{{else}}btn-danger{{/if}}">
-							<span class="glyphicon glyphicon-off"></span>
-						</button>
-						{{#if power}}
-						<p>
-							<b>R</b>
-							<input type="text" class="span2" value="" id="r" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="{{color.r}}" data-slider-id="RC" data-slider-orientation="horizontal" data-slider-tooltip="hide" data-slider-selection="after" />
-						</p>
-						<p>
-							<b>G</b>
-							<input type="text" class="span2" value="" id="g" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="{{color.g}}" data-slider-id="GC" data-slider-orientation="horizontal" data-slider-tooltip="hide" data-slider-selection="after" />
-						</p>
+						<div class="row" style="height: 40px">
+							<div id="color" style="height: 80%; width: 100%; float-left:auto; float-right:auto"></div>
+						</div>
+						<div class="row">
+							<div class="col-xs-3 col-md-2">
+								<button type="button" id="power" class="btn btn-lg {{#if power }}btn-success{{else}}btn-danger{{/if}}">
+									<span class="glyphicon glyphicon-off"></span>
+								</button>
+							</div>
+							<div class="col-xs-6 col-md-4">
+								{{#if power}}
+								<p>
+									<b>H</b>
+									<input type="text" class="span2" value="" id="h" data-slider-min="0" data-slider-max="359" data-slider-step="1" data-slider-value="{{color.h}}" data-slider-id="HC" data-slider-orientation="horizontal" data-slider-tooltip="hide" data-slider-selection="after" />
+								</p>
+								<p>
+									<b>S</b>
+									<input type="text" class="span2" value="" id="s" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="{{asPercent color.s}}" data-slider-id="SC" data-slider-orientation="horizontal" data-slider-tooltip="hide" data-slider-selection="after" />
+								</p>
 
-						<p>
-							<b>R</b>
-							<input type="text" class="span2" value="" id="b" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="{{color.b}}" data-slider-id="RB" data-slider-orientation="horizontal" data-slider-tooltip="hide" data-slider-selection="after" />
-						</p>
-						{{/if}}
+								<p>
+									<b>V</b>
+									<input type="text" class="span2" value="" id="v" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="{{asPercent color.v}}" data-slider-id="VC" data-slider-orientation="horizontal" data-slider-tooltip="hide" data-slider-selection="after" />
+								</p>
+								{{/if}}
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

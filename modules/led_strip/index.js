@@ -1,6 +1,7 @@
 var Skynet = require("../skynet");
 var LightStrips = require('./LPD8806').LightStrips;
-var animations = require('./animations/animations');
+//var animations = require('./animations/a');
+var util = require("./util");
 
 var ledStrip = function(app, options) {
 	this.options = options;
@@ -23,13 +24,16 @@ var ledStrip = function(app, options) {
 	this.state = {
 		"name": this.options.skynet.me.name,
 		"type": "led_strip",
-		"power": false
-		/*
+		"power": false,
 		"color": {
 			"r": 0,
 			"g": 0,
-			"b": 0
-		},
+			"b": 0,
+			"h": 0,
+			"s": 0,
+			"v": 0
+		}
+		/*
 		"animation": {
 			"name": "",
 			"duration": 0,
@@ -50,16 +54,45 @@ var ledStrip = function(app, options) {
 
 	this.turnOff = function() {
 		console.log("turning off");
-		this.lights.off();
+		this.setColor({
+			"r": 0,
+			"g": 0,
+			"b": 0
+		});
 		this.state.power = false;
 	};
 
 	this.setColor = function(colorData) {
 		console.log("setting color",colorData);
-		this.lights.all(colorData.r, colorData.g, colorData.b);
+		if (typeof colorData.r != 'undefined' && 
+			typeof colorData.g != 'undefined' && 
+			typeof colorData.b != 'undefined') {
+			console.log("got rgb");
+			this.lights.all(colorData.r, colorData.g, colorData.b);
+			var hsvData = util.RGBtoHSV(colorData);
+			colorData.h = hsvData.h;
+			colorData.s = hsvData.s;
+			colorData.v = hsvData.v;
+		} else if (typeof colorData.h != 'undefined' && 
+			typeof colorData.s != 'undefined' && 
+			typeof colorData.v != 'undefined') {
+			console.log("only got hsv");
+			var rgbData = util.HSVtoRGB(colorData);
+			this.lights.all(rgbData.r, rgbData.g, rgbData.b);
+			colorData.r = rgbData.r;
+			colorData.g = rgbData.g;
+			colorData.b = rgbData.b;
+		} else {
+			console.log("didn't get any color data of note",colorData);
+		}
+		
 		this.lights.sync();
 		this.state.power = true;
 		this.state.color = colorData;
+	};
+
+	this.setValue = function(valuePercentage) {
+
 	};
 
 
@@ -90,6 +123,8 @@ var ledStrip = function(app, options) {
 
 		this.skynet.emitState(this.state);
 	});
+
+	this.turnOff();
 };
 
 

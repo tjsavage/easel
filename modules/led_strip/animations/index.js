@@ -6,3 +6,4 @@ module.exports.load = function(animationName, lights, numLEDs) {
 		return new Throb(lights, numLEDs, [255, 0, 0], [0, 0, 255], 20);
 	}
 };
+

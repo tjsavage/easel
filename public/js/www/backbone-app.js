@@ -2,6 +2,10 @@ _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
 };
 
+Handlebars.registerHelper("asPercent", function(number) {
+	return Math.floor(number * 100);
+});
+
 var Easel = function() {
 };
 
@@ -70,6 +74,7 @@ Easel.ModuleModel = Backbone.Model.extend({
 		};
 		console.log("sending set:state",stateMessage);
 		this.socket.emit("set:state", stateMessage);
+		this.socket.emit("get:state");
 	}
 });
 
@@ -80,6 +85,7 @@ Easel.ModuleView = Backbone.View.extend({
 		console.log(this.model.get("type"));
 		this.template = Handlebars.compile($("#template-" + this.model.get("type")).html());
 		this.model.on("change", this.render, this);
+		this.model.socket.emit("get:state");
 	},
 
 	render: function() {
@@ -88,29 +94,35 @@ Easel.ModuleView = Backbone.View.extend({
 		if (this.model.get("type") === "led_strip") {
 			this.renderLedStrip();
 		}
+		if (typeof this.model.get("color").r != "undefined") {
+			var rgbCSS = "rgb("+Math.round(this.model.get("color").r)+","+Math.round(this.model.get("color").g)+","+Math.round(this.model.get("color").b)+")";
+			this.$el.find("#color").css("background", rgbCSS);
+		}
+		
 		return this.el;
 	},
 
 	renderLedStrip: function() {
+		console.log("rendering led strip");
 		var model = this.model;
 		var T = this;
 		var rgbChange = function() {
 			T.model.set("color", {
-				"r": rSlider.getValue(),
-				"g": gSlider.getValue(),
-				"b": bSlider.getValue()
+				"h": hSlider.getValue(),
+				"s": sSlider.getValue() / 100.0,
+				"v": vSlider.getValue() / 100.0
 			});
 			T.model.setState();
 		};
-		var rSlider = this.$el.find("#r").slider();
-		rSlider.on('slideStop', rgbChange);
-		rSlider = rSlider.data("slider");
-		var gSlider = this.$el.find("#g").slider();
-		gSlider.on('slideStop', rgbChange);
-		gSlider = gSlider.data('slider');
-		var bSlider = this.$el.find("#b").slider();
-		bSlider.on('slideStop', rgbChange);
-		bSlider = bSlider.data('slider');
+		var hSlider = this.$el.find("#h").slider();
+		hSlider.on('slideStop', rgbChange);
+		hSlider = hSlider.data("slider");
+		var sSlider = this.$el.find("#s").slider();
+		sSlider.on('slideStop', rgbChange);
+		sSlider = sSlider.data('slider');
+		var vSlider = this.$el.find("#v").slider();
+		vSlider.on('slideStop', rgbChange);
+		vSlider = vSlider.data('slider');
 	},
 
 	events: {
