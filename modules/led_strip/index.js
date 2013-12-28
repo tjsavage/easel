@@ -138,33 +138,37 @@ var ledStrip = function(app, options) {
 		this.animation.start();
 	};
 
+	var T = this;
+
 	this.skynet.onGetState(function() {
-		return this.state;
+		console.log("ongetState for led_strip", T.state);
+		console.log("led_strip options",T.options);
+		return T.state;
 	});
 
 	this.skynet.onSetState(function(stateData) {
 		console.log("settingState", stateData);
 		if (typeof stateData.power !== "undefined") {
 			console.log("setting power",stateData.power);
-			if (this.state.power && !stateData.power) {
-				this.turnOff();
+			if (T.state.power && !stateData.power) {
+				T.turnOff();
 			}
-			if (!this.state.power && stateData.power) {
-				this.turnOn();
+			if (!T.state.power && stateData.power) {
+				T.turnOn();
 			}
 		}
-		if (typeof stateData.color !== "undefined" && this.state.power) {
+		if (typeof stateData.color !== "undefined" && T.state.power) {
 			console.log("setting color",stateData.color);
-			this.setColor(stateData.color);
+			T.setColor(stateData.color);
 		}
-		if (typeof stateData.animation == "undefined" && this.state.power) {
-			this.all();
+		if (typeof stateData.animation == "undefined" && T.state.power) {
+			T.all();
 		}
-		if (typeof stateData.animation !== "undefined" && this.state.power) {
-			this.setAnimation(stateData.animation);
+		if (typeof stateData.animation !== "undefined" && T.state.power) {
+			T.setAnimation(stateData.animation);
 		}
 
-		this.skynet.emitState(this.state);
+		T.skynet.emitState(this.state);
 	});
 
 	this.turnOff();

@@ -28,8 +28,11 @@ if ('development' == app.get('env')) {
 }
 
 console.log(config);
+var moduleObjects = [];
 config.modules.forEach(function(module) {
-	require("./modules/" + module.type)(app, module.options);
+	var Module = require("./modules/" + module.type);
+	var m = new Module(app, module.options);
+	moduleObjects.push(m);
 });
 
 server.listen(app.get('port'), function(){

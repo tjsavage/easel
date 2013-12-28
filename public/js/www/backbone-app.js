@@ -246,13 +246,15 @@ Easel.DashboardView = Backbone.View.extend({
 	},
 
 	onAddModule: function(module) {
-		var newModuleView;
+		var newModuleView = null;
 		if (module.get("type") == "led_strip") {
 			newModuleView = new Easel.LedStripModuleView({
 				model: module
 			});
 		}
-		this.$el.append(newModuleView.render());
+		if (newModuleView !== null) {
+			this.$el.append(newModuleView.render());
+		}
 	},
 
 	onError: function(err) {
@@ -271,7 +273,7 @@ $(function() {
 
 	$("#refresh-button").click(function() {
 		Dashboard.trigger("refresh");
-	})
+	});
 
 	Dashboard.trigger("refresh");
 });

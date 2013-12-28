@@ -6,9 +6,11 @@ var options = {
     'force new connection': true
 };
 
-var Skynet = function(context, config) {
+function Skynet(context, config) {
     this.context = context;
+    console.log("initial context options",this.context.options);
     this.config = config;
+    this.onGetStateHandler = null;
     if (this.config.me.type === "client") {
         this.serverAddress = this.config.server.ip + ":" + this.config.server.port;
         this.socket = socketio_client.connect(this.serverAddress, options);
@@ -52,7 +54,7 @@ Skynet.prototype.emitState = function(stateData) {
         "from": this.config.me.name,
         "body": stateData
     });
-}
+};
 
 Skynet.prototype.on = function(type, handler) {
     var T = this;
@@ -105,6 +107,8 @@ Skynet.prototype.onGetState = function(handler) {
             return;
         }
         var stateBody = T.onGetStateHandler.call(T.context);
+        console.log("this.config",T.config);
+        console.log("this.context.options",T.context.options);
         var state = {
             "from": T.config.me.name,
             "body": stateBody
