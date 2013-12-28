@@ -54,6 +54,10 @@ var ledStrip = function(app, options) {
 			"b": 0
 		});
 		this.state.power = false;
+		if (this.animation) {
+			this.animation.stop();
+			this.animation = null;
+		}
 		this.state.animation = null;
 	};
 
@@ -108,18 +112,29 @@ var ledStrip = function(app, options) {
 		});
 	};
 
+	this.emitState = function() {
+		this.skynet.emitState(this.state);
+	};
+
 	this.all = function() {
 		this.lights.all(this.state.color.r, this.state.color.g, this.state.color.b);
 		this.lights.sync();
 	};
 
 
-	this.animate = function(animationData) {
+	this.setAnimation = function(animationData) {
+		console.log("setting animation",animationData);
 		if (typeof this.animation != "undefined" && this.animation) {
 			this.animation.stop();
 		}
+		if (!animationData) {
+			this.animation = null;
+			this.state.animation = null;
+			return;
+		}
 		var animation = animations.load(animationData.name, this, animationData.duration, animationData.options);
 		this.animation = animation;
+		this.state.animation = animationData;
 		this.animation.start();
 	};
 
@@ -145,12 +160,8 @@ var ledStrip = function(app, options) {
 		if (typeof stateData.animation == "undefined" && this.state.power) {
 			this.all();
 		}
-		if (typeof stateData.animation !== "undefined" && stateData.animation && this.state.power) {
-			if (!this.state.animation ||
-				stateData.animation.name != this.state.animation.name ||
-				stateData.animation.duration != this.state.animation.duration) {
-				this.animate(stateData.animation);
-			}
+		if (typeof stateData.animation !== "undefined" && this.state.power) {
+			this.setAnimation(stateData.animation);
 		}
 
 		this.skynet.emitState(this.state);

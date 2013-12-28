@@ -66,11 +66,11 @@ Easel.ModuleModel = Backbone.NestedModel.extend({
 	initialize: function() {
 	},
 
-	setState: function() {
+	setState: function(stateData) {
 		var stateMessage = {
 			"from": "www-client",
 			"to": this.get("name"),
-			"body": this.toJSON()
+			"body": stateData
 		};
 		this.socket.emit("set:state", stateMessage);
 	}
@@ -88,6 +88,7 @@ Easel.ModuleView = Backbone.View.extend({
 Easel.LedStripModuleView = Easel.ModuleView.extend({
 	events: {
 		"click #power": "togglePower",
+		"click #animation-pulse": "pulseAnimationClicked"
 	},
 
 	registerHandlers: function() {
@@ -96,6 +97,7 @@ Easel.LedStripModuleView = Easel.ModuleView.extend({
 		this.model.bind("change:color.s", this.saturationChanged, this);
 		this.model.bind("change:color.v", this.valueChanged, this);
 		this.model.bind("change:color", this.colorChanged, this);
+		this.model.bind("change:animation", this.animationChanged, this);
 	},
 
 	registerEvents: function() {
@@ -122,6 +124,26 @@ Easel.LedStripModuleView = Easel.ModuleView.extend({
 		});
 	},
 
+	pulseAnimationClicked: function() {
+		if (this.model.get("animation.name") == "pulse") {
+			console.log("setting animation to null");
+			this.model.setState({
+				"animation": null
+			});
+		} else {
+			this.model.setState({
+				"animation": {
+					"name": "pulse",
+					"duration": 3000,
+					"options": {
+						"loop": true
+					}
+				}
+			});
+		}
+		
+	},
+
 	powerChanged: function(model, newPower) {
 		if (newPower) {
 			this.$el.find("#power").removeClass("btn-danger").addClass("btn-success");
@@ -145,6 +167,14 @@ Easel.LedStripModuleView = Easel.ModuleView.extend({
 
 	valueChanged: function(model, newValue) {
 		this.$el.find("#v").data("slider").setValue(Math.round(newValue * 100));
+	},
+
+	animationChanged: function(model, newAnimation) {
+		if (newAnimation && newAnimation.name == "pulse") {
+			this.$el.find("#animation-pulse").addClass("btn-success");
+		} else {
+			this.$el.find("#animation-pulse").removeClass("btn-success");
+		}
 	},
 
 	setHue: function(newHue) {

@@ -45,7 +45,6 @@
 								</button>								
 							</div>
 							<div class="col-xs-6 col-md-4">
-								{{#if power}}
 								<p>
 									<b>H</b>
 									<input type="text" class="span2" value="" id="h" data-slider-min="0" data-slider-max="359" data-slider-step="1" data-slider-value="{{color.h}}" data-slider-id="HC" data-slider-orientation="horizontal" data-slider-tooltip="hide" data-slider-selection="after" />
@@ -59,14 +58,13 @@
 									<b>V</b>
 									<input type="text" class="span2" value="" id="v" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="{{asPercent color.v}}" data-slider-id="VC" data-slider-orientation="horizontal" data-slider-tooltip="hide" data-slider-selection="after" />
 								</p>
-								{{/if}}
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-lg-6">
 								<div class="input-group">
 									<div class="input-group-btn">
-										<button type="button" id="animation-pulse" class="btn btn-lg {{#ifEquals animation.name desired='pulse' data=animation.name}}btn-success{{/ifEquals}}" data-toggle="dropdown">pulse</button>
+										<button type="button" id="animation-pulse" class="btn btn-lg btn-default animation-button" data-toggle="dropdown">pulse</button>
 										{{ animation.name }}
 									</div>
 								</div>

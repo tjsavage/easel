@@ -13,6 +13,7 @@ Pulse.prototype.refresh = function(percentComplete) {
 	var value = (Math.sin(angle) + 1.0) / 2.0;
 
 	this.setter.setValue(value);
+	this.setter.emitState();
 	this.setter.all();
 }
 
