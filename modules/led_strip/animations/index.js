@@ -1,9 +1,8 @@
-var Throb = require('./throb');
-var LarsonScanner = require('./larsonScanner');
+var Pulse = require("./pulse");
 
-module.exports.load = function(animationName, lights, numLEDs) {
-	if (animationName === "nightlight") {
-		return new Throb(lights, numLEDs, [255, 0, 0], [0, 0, 255], 20);
+module.exports.load = function(animationName, setter, duration, options) {
+	if (animationName === "pulse") {
+		return new Pulse(setter, duration, options);
 	}
 };
 

@@ -6,6 +6,14 @@ Handlebars.registerHelper("asPercent", function(number) {
 	return Math.floor(number * 100);
 });
 
+Handlebars.registerHelper("ifEquals", function(conditional, options) {
+	if (options.hash.desired === options.hash.data) {
+		return options.fn(this);
+	} else {
+		return options.inverse(this);
+	}
+});
+
 var Easel = function() {
 };
 
@@ -32,11 +40,9 @@ Easel.Dashboard = Backbone.Model.extend({
 	},
 
 	onBroadcastState: function(message) {
-		console.log("got state",message);
 		var module = this.modules[message.from];
 
 		if (!module) {
-			console.log("creating new module",message.body)
 			module = new Easel.ModuleModel(message.body);
 			module.socket = this.socket;
 			this.trigger("add:module", module);
@@ -46,7 +52,6 @@ Easel.Dashboard = Backbone.Model.extend({
 	},
 
 	refresh: function() {
-		console.log("dashboard refresh triggered");
 		this.getStates();
 	},
 
@@ -63,7 +68,6 @@ Easel.ModuleModel = Backbone.Model.extend({
 	},
 
 	onChange: function() {
-		console.log("changed ",this.get("name"),this.toJSON());
 	},
 
 	setState: function() {
@@ -72,7 +76,6 @@ Easel.ModuleModel = Backbone.Model.extend({
 			"to": this.get("name"),
 			"body": this.toJSON()
 		};
-		console.log("sending set:state",stateMessage);
 		this.socket.emit("set:state", stateMessage);
 		this.socket.emit("get:state");
 	}
@@ -82,14 +85,13 @@ Easel.ModuleView = Backbone.View.extend({
 	tagName: "div",
 	className: "module",
 	initialize: function() {
-		console.log(this.model.get("type"));
 		this.template = Handlebars.compile($("#template-" + this.model.get("type")).html());
 		this.model.on("change", this.render, this);
 		this.model.socket.emit("get:state");
+		this.selectedAnimation = null;
 	},
 
 	render: function() {
-		console.log("rendering template with",this.model.toJSON());
 		this.$el.html(this.template(this.model.toJSON()));
 		if (this.model.get("type") === "led_strip") {
 			this.renderLedStrip();
@@ -103,7 +105,6 @@ Easel.ModuleView = Backbone.View.extend({
 	},
 
 	renderLedStrip: function() {
-		console.log("rendering led strip");
 		var model = this.model;
 		var T = this;
 		var rgbChange = function() {
@@ -123,14 +124,31 @@ Easel.ModuleView = Backbone.View.extend({
 		var vSlider = this.$el.find("#v").slider();
 		vSlider.on('slideStop', rgbChange);
 		vSlider = vSlider.data('slider');
+
+		this.$el.find("#animation-pulse").click(function() {
+			console.log('clicked pulse');
+			var currentAnimation = T.model.get("animation");
+			if (!currentAnimation || currentAnimation.name != "pulse") {
+				T.model.set("animation", {
+					"name": "pulse",
+					"duration": 3000,
+					"options": {
+						"loop": true
+					}
+				});
+			} else if (currentAnimation.name == "pulse") {
+				T.model.set("animation", null);
+			}
+			T.model.setState();
+		})
 	},
 
 	events: {
-		"click #power": "togglePower"
+		"click #power": "togglePower",
 	},
 
 	togglePower: function() {
-		console.log("toggling power, was",this.model.get("power"));
+		console.log("clicked power");
 		this.model.set("power", !this.model.get("power"));
 		this.model.setState();
 	}
@@ -164,7 +182,8 @@ $(function() {
 	});
 
 	$("#refresh-button").click(function() {
-		console.log("refresh clicked");
 		Dashboard.trigger("refresh");
 	})
+
+	Dashboard.trigger("refresh");
 });

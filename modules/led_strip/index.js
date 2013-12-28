@@ -1,6 +1,6 @@
 var Skynet = require("../skynet");
 var LightStrips = require('./LPD8806').LightStrips;
-//var animations = require('./animations/a');
+var animations = require('./animations');
 var util = require("./util");
 
 var ledStrip = function(app, options) {
@@ -32,14 +32,8 @@ var ledStrip = function(app, options) {
 			"h": 0,
 			"s": 0,
 			"v": 0
-		}
-		/*
-		"animation": {
-			"name": "",
-			"duration": 0,
-			"after": "loop"
-		}
-		*/
+		},
+		"animation": null
 	};
 
 	this.turnOn = function() {
@@ -60,45 +54,75 @@ var ledStrip = function(app, options) {
 			"b": 0
 		});
 		this.state.power = false;
+		this.state.animation = null;
 	};
 
 	this.setColor = function(colorData) {
 		console.log("setting color",colorData);
-		if (typeof colorData.r != 'undefined' && 
-			typeof colorData.g != 'undefined' && 
-			typeof colorData.b != 'undefined') {
-			console.log("got rgb");
-			this.lights.all(colorData.r, colorData.g, colorData.b);
-			var hsvData = util.RGBtoHSV(colorData);
-			colorData.h = hsvData.h;
-			colorData.s = hsvData.s;
-			colorData.v = hsvData.v;
-		} else if (typeof colorData.h != 'undefined' && 
-			typeof colorData.s != 'undefined' && 
-			typeof colorData.v != 'undefined') {
-			console.log("only got hsv");
-			var rgbData = util.HSVtoRGB(colorData);
-			this.lights.all(rgbData.r, rgbData.g, rgbData.b);
-			colorData.r = rgbData.r;
-			colorData.g = rgbData.g;
-			colorData.b = rgbData.b;
-		} else {
-			console.log("didn't get any color data of note",colorData);
+		var newColorData = this.state.color;
+		var rgbChanged = false;
+		var hsvChanged = false;
+		if (typeof colorData.r != 'undefined') {
+			newColorData.r = colorData.r;
+			rgbChanged = true;
+		}
+		if (typeof colorData.g != 'undefined') {
+			newColorData.g = colorData.g;
+			rgbChanged = true;
+		}
+		if (typeof colorData.b != 'undefined') {
+			newColorData.b = colorData.b;
+			rgbChanged = true;
+		}
+		if (typeof colorData.h != 'undefined') {
+			newColorData.h = colorData.h;
+			hsvChanged = true;
+		}
+		if (typeof colorData.s != 'undefined') {
+			newColorData.s = colorData.s;
+			hsvChanged = true
+		}
+		if (typeof colorData.v != 'undefined') {
+			newColorData.v = colorData.v;
+			hsvChanged = true;
+		}
+		if (hsvChanged && !rgbChanged) {
+			var newRGBData = util.HSVtoRGB(newColorData);
+			newColorData.r = newRGBData.r;
+			newColorData.g = newRGBData.g;
+			newColorData.b = newRGBData.b;
+		} else if (rgbChanged && !hsvChanged) {
+			var newHSVData = util.RGBtoHSV(newColorData);
+			newColorData.h = newHSVData.h;
+			newColorData.s = newHSVData.s;
+			newColorData.v = newHSVData.v;
 		}
 		
-		this.lights.sync();
 		this.state.power = true;
-		this.state.color = colorData;
+		this.state.color = newColorData;
+
+		this.skynet.emitState(this.state);
 	};
 
 	this.setValue = function(valuePercentage) {
+		this.setColor({
+			v: valuePercentage
+		});
+	};
 
+	this.all = function() {
+		this.lights.all(this.state.color.r, this.state.color.g, this.state.color.b);
+		this.lights.sync();
 	};
 
 
 	this.animate = function(animationData) {
-		var animation = animations.load(animationName, this.lights, this.options.leds);
-		animation.start();
+		if (typeof this.animation != "undefined" && this.animation) {
+			this.animation.stop();
+		}
+		var animation = animations.load(animationData.name, this, animationData.duration, animationData.options);
+		this.animation = animation;
+		this.animation.start();
 	};
 
 	this.skynet.onGetState(function() {
@@ -119,6 +143,16 @@ var ledStrip = function(app, options) {
 		if (typeof stateData.color !== "undefined" && this.state.power) {
 			console.log("setting color",stateData.color);
 			this.setColor(stateData.color);
+		}
+		if (typeof stateData.animation == "undefined" && this.state.power) {
+			this.all();
+		}
+		if (typeof stateData.animation !== "undefined" && stateData.animation && this.state.power) {
+			if (!this.state.animation ||
+				stateData.animation.name != this.state.animation.name ||
+				stateData.animation.duration != this.state.animation.duration) {
+				this.animate(stateData.animation);
+			}
 		}
 
 		this.skynet.emitState(this.state);
