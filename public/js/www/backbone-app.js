@@ -17,7 +17,7 @@ Handlebars.registerHelper("ifEquals", function(conditional, options) {
 var Easel = function() {
 };
 
-Easel.Dashboard = Backbone.Model.extend({
+Easel.Dashboard = Backbone.NestedModel.extend({
 	initialize: function() {
 		this.modules = {};
 		this.socket = io.connect('http://127.0.0.1');
@@ -62,12 +62,8 @@ Easel.Dashboard = Backbone.Model.extend({
 
 });
 
-Easel.ModuleModel = Backbone.Model.extend({
+Easel.ModuleModel = Backbone.NestedModel.extend({
 	initialize: function() {
-		this.on("change", this.onChange, this);
-	},
-
-	onChange: function() {
 	},
 
 	setState: function() {
@@ -77,7 +73,6 @@ Easel.ModuleModel = Backbone.Model.extend({
 			"body": this.toJSON()
 		};
 		this.socket.emit("set:state", stateMessage);
-		this.socket.emit("get:state");
 	}
 });
 
@@ -86,45 +81,111 @@ Easel.ModuleView = Backbone.View.extend({
 	className: "module",
 	initialize: function() {
 		this.template = Handlebars.compile($("#template-" + this.model.get("type")).html());
-		this.model.on("change", this.render, this);
-		this.model.socket.emit("get:state");
-		this.selectedAnimation = null;
+		this.registerHandlers();
+	}
+});
+
+Easel.LedStripModuleView = Easel.ModuleView.extend({
+	events: {
+		"click #power": "togglePower",
+	},
+
+	registerHandlers: function() {
+		this.model.bind("change:power", this.powerChanged, this);
+		this.model.bind("change:color.h", this.hueChanged, this);
+		this.model.bind("change:color.s", this.saturationChanged, this);
+		this.model.bind("change:color.v", this.valueChanged, this);
+		this.model.bind("change:color", this.colorChanged, this);
+	},
+
+	registerEvents: function() {
+		var T = this;
+		this.$el.find("#h").css("width","100%").slider().on("slide", function(){
+			T.setHue.call(T, $(this).data("slider").getValue());
+		});
+		this.$el.find("#s").css("width","100%").slider().on("slide", function(){
+			T.setSaturation.call(T, $(this).data("slider").getValue());
+		});
+		this.$el.find("#v").css("width","100%").slider().on("slide", function(){
+			T.setValue.call(T, $(this).data("slider").getValue());
+		});
+	},
+
+	togglePower: function() {
+		var newPower = !this.model.get("power");
+		console.log("emitting state");
+		this.model.socket.emit("set:state", {
+			"to": this.model.get("name"),
+			"body": {
+				"power": newPower
+			}
+		});
+	},
+
+	powerChanged: function(model, newPower) {
+		if (newPower) {
+			this.$el.find("#power").removeClass("btn-danger").addClass("btn-success");
+		} else {
+			this.$el.find("#power").removeClass("btn-success").addClass("btn-danger");
+		}
+	},
+
+	colorChanged: function(model, newColor) {
+		var rgbCSS = "rgb("+Math.round(newColor.r)+","+Math.round(newColor.g)+","+Math.round(newColor.b)+")";
+		this.$el.find("#color").css("background", rgbCSS);
+	},
+
+	hueChanged: function(model, newHue) {
+		this.$el.find("#h").data("slider").setValue(newHue);
+	},
+
+	saturationChanged: function(model, newSaturation) {
+		this.$el.find("#s").data("slider").setValue(Math.round(newSaturation * 100));
+	},
+
+	valueChanged: function(model, newValue) {
+		this.$el.find("#v").data("slider").setValue(Math.round(newValue * 100));
+	},
+
+	setHue: function(newHue) {
+		this.model.socket.emit("set:state", {
+			"to": this.model.get("name"),
+			"body": {
+				"color": {
+					"h": newHue
+				}
+			}
+		});
+	},
+
+	setSaturation: function(newSaturation) {
+		this.model.socket.emit("set:state", {
+			"to": this.model.get("name"),
+			"body": {
+				"color": {
+					"s": newSaturation / 100.0
+				}
+			}
+		});
+	},
+
+	setValue: function(newValue) {
+		this.model.socket.emit("set:state", {
+			"to": this.model.get("name"),
+			"body": {
+				"color": {
+					"v": newValue / 100.0
+				}
+			}
+		});
 	},
 
 	render: function() {
 		this.$el.html(this.template(this.model.toJSON()));
-		if (this.model.get("type") === "led_strip") {
-			this.renderLedStrip();
-		}
-		if (typeof this.model.get("color").r != "undefined") {
-			var rgbCSS = "rgb("+Math.round(this.model.get("color").r)+","+Math.round(this.model.get("color").g)+","+Math.round(this.model.get("color").b)+")";
-			this.$el.find("#color").css("background", rgbCSS);
-		}
-		
-		return this.el;
-	},
-
-	renderLedStrip: function() {
+	
 		var model = this.model;
 		var T = this;
-		var rgbChange = function() {
-			T.model.set("color", {
-				"h": hSlider.getValue(),
-				"s": sSlider.getValue() / 100.0,
-				"v": vSlider.getValue() / 100.0
-			});
-			T.model.setState();
-		};
-		var hSlider = this.$el.find("#h").slider();
-		hSlider.on('slideStop', rgbChange);
-		hSlider = hSlider.data("slider");
-		var sSlider = this.$el.find("#s").slider();
-		sSlider.on('slideStop', rgbChange);
-		sSlider = sSlider.data('slider');
-		var vSlider = this.$el.find("#v").slider();
-		vSlider.on('slideStop', rgbChange);
-		vSlider = vSlider.data('slider');
-
+		/*
 		this.$el.find("#animation-pulse").click(function() {
 			console.log('clicked pulse');
 			var currentAnimation = T.model.get("animation");
@@ -140,17 +201,11 @@ Easel.ModuleView = Backbone.View.extend({
 				T.model.set("animation", null);
 			}
 			T.model.setState();
-		})
-	},
-
-	events: {
-		"click #power": "togglePower",
-	},
-
-	togglePower: function() {
-		console.log("clicked power");
-		this.model.set("power", !this.model.get("power"));
-		this.model.setState();
+		});
+		*/
+		this.colorChanged(this, this.model.get("color"));
+		this.registerEvents();
+		return this.el;
 	}
 });
 
@@ -161,9 +216,12 @@ Easel.DashboardView = Backbone.View.extend({
 	},
 
 	onAddModule: function(module) {
-		var newModuleView = new Easel.ModuleView({
-			model: module
-		});
+		var newModuleView;
+		if (module.get("type") == "led_strip") {
+			newModuleView = new Easel.LedStripModuleView({
+				model: module
+			});
+		}
 		this.$el.append(newModuleView.render());
 	},
 

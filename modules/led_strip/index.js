@@ -80,7 +80,7 @@ var ledStrip = function(app, options) {
 		}
 		if (typeof colorData.s != 'undefined') {
 			newColorData.s = colorData.s;
-			hsvChanged = true
+			hsvChanged = true;
 		}
 		if (typeof colorData.v != 'undefined') {
 			newColorData.v = colorData.v;
@@ -100,8 +100,6 @@ var ledStrip = function(app, options) {
 		
 		this.state.power = true;
 		this.state.color = newColorData;
-
-		this.skynet.emitState(this.state);
 	};
 
 	this.setValue = function(valuePercentage) {
