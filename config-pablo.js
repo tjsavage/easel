@@ -20,25 +20,6 @@ var config = {
 					}
 				}
 			}
-		},
-		{
-			"type": "motion_detector",
-			"options": {
-				"name": "bed_motion_detector",
-				"pin": 18,
-				"skynet": {
-					"me": {
-						"type": "client",
-						"name": "test-leds",
-						"port": 3003
-					},
-					"server": {
-						"name": "vincent",
-						"port": 3001,
-						"ip": "10.0.1.19"
-					}
-				}
-			}
 		}
 	]
 };

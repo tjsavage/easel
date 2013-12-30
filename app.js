@@ -30,6 +30,7 @@ if ('development' == app.get('env')) {
 console.log(config);
 var moduleObjects = [];
 config.modules.forEach(function(module) {
+	console.log("starting",module.type);
 	var Module = require("./modules/" + module.type);
 	var m = new Module(app, module.options);
 	moduleObjects.push(m);
