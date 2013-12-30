@@ -9,7 +9,7 @@ var motionDetector = function(app, options) {
 		"lastTripped": null
 	};
 
-	this.gpioPin = gpio.export(options.pin, {
+	var gpioPin = gpio.export(options.pin, {
 		direction: "in",
 		ready: function() {
 			console.log("motion detector ready");
@@ -18,7 +18,7 @@ var motionDetector = function(app, options) {
 
 	var T = this;
 
-	this.gpioPin.on("change", function(val) {
+	gpioPin.on("change", function(val) {
 		console.log("changed motion detector pin to " + val);
 		if (val) {
 			T.state.tripped = true;
