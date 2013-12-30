@@ -1,4 +1,5 @@
 var gpio = require("gpio");
+var Skynet = require("../skynet");
 
 var motionDetector = function(app, options) {
 	this.options = options;
