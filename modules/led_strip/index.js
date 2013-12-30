@@ -12,6 +12,7 @@ var ledStrip = function(app, options) {
 		spiDevice = options.spiDevice;
 	} else {
 		var spi = require("spi");
+		var device = '/dev/spidev0.0';
 		spiDevice = new spi.Spi(device, {
                                         //"mode": spi.MODE['MODE_0'],
                                         //"chipSelect": spi.CS['none'],
