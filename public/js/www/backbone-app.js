@@ -88,7 +88,8 @@ Easel.ModuleView = Backbone.View.extend({
 Easel.LedStripModuleView = Easel.ModuleView.extend({
 	events: {
 		"click #power": "togglePower",
-		"click #animation-pulse": "pulseAnimationClicked"
+		"click #animation-pulse": "pulseAnimationClicked",
+		"click #animation-rainbow": "rainbowAnimationClicked"
 	},
 
 	registerHandlers: function() {
@@ -141,7 +142,25 @@ Easel.LedStripModuleView = Easel.ModuleView.extend({
 				}
 			});
 		}
-		
+	},
+
+	rainbowAnimationClicked: function() {
+		if (this.model.get("animation.name") == "rainbow") {
+			console.log("setting animation to null");
+			this.model.setState({
+				"animation": null
+			});
+		} else {
+			this.model.setState({
+				"animation": {
+					"name": "rainbow",
+					"duration": 3000,
+					"options": {
+						"loop": true
+					}
+				}
+			});
+		}
 	},
 
 	powerChanged: function(model, newPower) {
@@ -174,6 +193,12 @@ Easel.LedStripModuleView = Easel.ModuleView.extend({
 			this.$el.find("#animation-pulse").addClass("btn-success");
 		} else {
 			this.$el.find("#animation-pulse").removeClass("btn-success");
+		}
+
+		if (newAnimation && newAnimation.name == "rainbow") {
+			this.$el.find("#animation-rainbow").addClass("btn-success");
+		} else {
+			this.$el.find("#animation-rainbow").removeClass("btn-success");
 		}
 	},
 
@@ -215,24 +240,7 @@ Easel.LedStripModuleView = Easel.ModuleView.extend({
 	
 		var model = this.model;
 		var T = this;
-		/*
-		this.$el.find("#animation-pulse").click(function() {
-			console.log('clicked pulse');
-			var currentAnimation = T.model.get("animation");
-			if (!currentAnimation || currentAnimation.name != "pulse") {
-				T.model.set("animation", {
-					"name": "pulse",
-					"duration": 3000,
-					"options": {
-						"loop": true
-					}
-				});
-			} else if (currentAnimation.name == "pulse") {
-				T.model.set("animation", null);
-			}
-			T.model.setState();
-		});
-		*/
+
 		this.colorChanged(this, this.model.get("color"));
 		this.registerEvents();
 		return this.el;

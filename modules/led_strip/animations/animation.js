@@ -47,6 +47,6 @@ Animation.prototype.tick = function() {
 
 Animation.prototype.refresh = function(percentComplete) {
 	console.log("refresh should be overridden");
-}
+};
 
 module.exports = Animation;

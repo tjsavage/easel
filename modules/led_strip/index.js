@@ -114,6 +114,12 @@ var ledStrip = function(app, options) {
 		});
 	};
 
+	this.setHue = function(newHue) {
+		this.setColor({
+			h: newHue
+		});
+	};
+
 	this.emitState = function() {
 		this.skynet.emitState(this.state);
 	};
