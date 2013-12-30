@@ -19,7 +19,7 @@ util.inherits(Pulse, Animation);
 
 Pulse.prototype.refresh = function(percentComplete) {
 	var angle = (Math.PI * 2) * percentComplete;
-	var value = (Math.sin(angle) + 1.0 + this.minValue) / (2.0) * (this.maxValue - this.minValue);
+	var value = (Math.sin(angle)) / (2.0) * (this.maxValue - this.minValue) + 1.0 + this.minValue;
 
 	this.setter.setValue(value);
 	this.setter.emitState();
