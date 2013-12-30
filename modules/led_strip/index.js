@@ -60,6 +60,7 @@ var ledStrip = function(app, options) {
 			this.animation = null;
 		}
 		this.state.animation = null;
+		this.lights.off();
 	};
 
 	this.setColor = function(colorData) {
@@ -158,14 +159,14 @@ var ledStrip = function(app, options) {
 				T.turnOn();
 			}
 		}
-		if (typeof stateData.color !== "undefined" && T.state.power) {
+		if (typeof stateData.color != "undefined" && T.state.power) {
 			console.log("setting color",stateData.color);
 			T.setColor(stateData.color);
 		}
 		if (typeof stateData.animation == "undefined" && T.state.power) {
 			T.all();
 		}
-		if (typeof stateData.animation !== "undefined" && T.state.power) {
+		if (typeof stateData.animation != "undefined" && T.state.power) {
 			T.setAnimation(stateData.animation);
 		}
 
