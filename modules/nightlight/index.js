@@ -20,7 +20,9 @@ var nightlight = function(app, options) {
 					"name": "pulse",
 					"duration": 3000,
 					"options": {
-						"loop": true
+						"loop": true,
+						"minValue": 0.5,
+						"maxValue": 0.9
 					}
 				}
 			});
