@@ -17,7 +17,7 @@ module.exports = function(app, options) {
 
 
 	app.get("/", function(req, res) {
-		res.render('index', {});
+		res.render('index', {socketIP: options.socketIP});
 	});
 
 	var skynet = new Skynet(this, options.skynet);
@@ -42,5 +42,5 @@ module.exports = function(app, options) {
 			return {};
 		});*/
 	});
-}
+};
 

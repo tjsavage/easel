@@ -21,6 +21,7 @@ var config = {
 		{
 			"type": "www",
 			"options": {
+				"socketIP": "10.0.1.19",
 				"skynet": {
 					"me": {
 						"type": "client",

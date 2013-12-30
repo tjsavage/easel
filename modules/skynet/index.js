@@ -8,7 +8,6 @@ var options = {
 
 function Skynet(context, config) {
     this.context = context;
-    console.log("initial context options",this.context.options);
     this.config = config;
     this.onGetStateHandler = null;
     if (this.config.me.type === "client") {
