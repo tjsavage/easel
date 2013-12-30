@@ -12,17 +12,17 @@ var nightlight = function(app, options) {
 			this.skynet.setState(T.options.ledStrip, {
 				"power": true,
 				"color": {
-					"r": 255,
-					"g": 0,
-					"b": 0
+					"h": 338,
+					"s": .34,
+					"v": .93,
 				},
 				"animation": {
 					"name": "pulse",
 					"duration": 3000,
 					"options": {
 						"loop": true,
-						"minValue": 0.5,
-						"maxValue": 0.9
+						"minValue": 0.3,
+						"maxValue": 0.6
 					}
 				}
 			});
