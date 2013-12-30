@@ -33,3 +33,5 @@ var motionDetector = function(app, options) {
 		return T.state;
 	});
 };
+
+module.exports = motionDetector;
