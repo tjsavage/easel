@@ -19,8 +19,9 @@ var motionDetector = function(app, options) {
 	var T = this;
 
 	gpioPin.on("change", function(val) {
-		console.log("changed motion detector pin to " + val);
-		if (val) {
+		console.log("changed motion detector pin to ", val);
+		if (val == 1) {
+			console.log("tripped motion detector");
 			T.state.tripped = true;
 			T.state.lastTripped = (new Date()).toString();
 		} else {
