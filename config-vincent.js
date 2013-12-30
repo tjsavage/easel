@@ -3,6 +3,16 @@ var config = {
 	"ip": "10.0.1.19",
 	"modules": [
 		{
+			"type": "skynet",
+			"options": {
+				"me": {
+					"type": "server",
+					"name": "skynet-server",
+					"port": 3001
+				}
+			}
+		},
+		{
 			"type": "doorbell",
 			"options": {
 
