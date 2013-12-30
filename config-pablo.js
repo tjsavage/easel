@@ -39,6 +39,26 @@ var config = {
 					}
 				}
 			}
+		},
+		{
+			"type": "nightlight",
+			"options": {
+				"name": "bed_nightlight",
+				"motionDetector": "bed_motion_detector",
+				"ledStrip": "bed_led_strip",
+				"skynet": {
+					"me": {
+						"type": "client",
+						"name": "bed_nightlight",
+						"port": 3004
+					},
+					"server": {
+						"name": "skynet-server",
+						"port": 3001,
+						"ip": "10.0.1.19"
+					}
+				}
+			}
 		}
 	]
 };

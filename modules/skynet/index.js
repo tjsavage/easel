@@ -128,6 +128,15 @@ Skynet.prototype.setState = function(name, stateData) {
     });
 };
 
+Skynet.prototype.onBroadcastState = function(name, handler) {
+    var T = this;
+    this.on("broadcast:state", function(message) {
+        if (message.from == name) {
+            handler.call(T.context, message.body);
+        }
+    });
+};
+
 Skynet.prototype.onReceiveState = function(handler) {
     this.on("broadcast:state", handler);
 };
