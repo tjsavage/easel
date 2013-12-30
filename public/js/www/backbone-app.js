@@ -20,7 +20,7 @@ var Easel = function() {
 Easel.Dashboard = Backbone.NestedModel.extend({
 	initialize: function() {
 		this.modules = {};
-		this.socket = io.connect('http://127.0.0.1');
+		this.socket = io.connect('http://' + SOCKET_IP);
 
 		this.on("refresh", this.refresh, this);
 		this.on("add:module", this.onAddModule, this);
