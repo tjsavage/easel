@@ -32,3 +32,5 @@ var nightlight = function(app, options) {
 		}
 	});
 };
+
+module.exports = nightlight;
