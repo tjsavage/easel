@@ -1,4 +1,4 @@
-var REFRESH_TIME = 100
+var REFRESH_TIME = 50;
 
 function Animation(setter, duration, options) {
 	this.startTime = null;
