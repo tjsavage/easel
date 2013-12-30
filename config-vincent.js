@@ -28,7 +28,7 @@ var config = {
 						"port": 3002
 					},
 					"server": {
-						"name": "vincent",
+						"name": "skynet-server",
 						"port": 3001,
 						"ip": "10.0.1.19"
 					}

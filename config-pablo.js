@@ -10,11 +10,11 @@ var config = {
 				"skynet": {
 					"me": {
 						"type": "client",
-						"name": "test-leds",
+						"name": "bed_led_strip",
 						"port": 3002
 					},
 					"server": {
-						"name": "vincent",
+						"name": "skynet-server",
 						"port": 3001,
 						"ip": "10.0.1.19"
 					}
