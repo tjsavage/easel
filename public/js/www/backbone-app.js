@@ -89,7 +89,8 @@ Easel.LedStripModuleView = Easel.ModuleView.extend({
 	events: {
 		"click #power": "togglePower",
 		"click #animation-pulse": "pulseAnimationClicked",
-		"click #animation-rainbow": "rainbowAnimationClicked"
+		"click #animation-rainbow": "rainbowAnimationClicked",
+		"click #animation-sunrise": "sunriseAnimationClicked"
 	},
 
 	registerHandlers: function() {
@@ -163,6 +164,25 @@ Easel.LedStripModuleView = Easel.ModuleView.extend({
 		}
 	},
 
+	sunriseAnimationClicked: function() {
+		if (this.model.get("animation.name") == "sunrise") {
+			console.log("setting animation to null");
+			this.model.setState({
+				"animation": null
+			});
+		} else {
+			this.model.setState({
+				"animation": {
+					"name": "sunrise",
+					"duration": 60000,
+					"options": {
+						"hold": true
+					}
+				}
+			});
+		}
+	},
+
 	powerChanged: function(model, newPower) {
 		if (newPower) {
 			this.$el.find("#power").removeClass("btn-danger").addClass("btn-success");
@@ -199,6 +219,12 @@ Easel.LedStripModuleView = Easel.ModuleView.extend({
 			this.$el.find("#animation-rainbow").addClass("btn-success");
 		} else {
 			this.$el.find("#animation-rainbow").removeClass("btn-success");
+		}
+
+		if (newAnimation && newAnimation.name == "sunrise") {
+			this.$el.find("#animation-sunrise").addClass("btn-success");
+		} else {
+			this.$el.find("#animation-sunrise").removeClass("btn-success");
 		}
 	},
 

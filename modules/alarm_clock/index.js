@@ -27,7 +27,15 @@ var alarmClock = function(app, options) {
 };
 
 alarmClock.prototype.triggerAlarm = function() {
-
+	this.skynet.setState(this.options.ledStrip, {
+		"animation": {
+			"name": "sunrise",
+			"duration": "600000",
+			"options": {
+				"hold": true
+			}
+		}
+	});
 };
 
 alarmClock.prototype.changeAlarmTime = function(newAlarmTime) {

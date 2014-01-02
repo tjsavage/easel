@@ -31,6 +31,8 @@ Animation.prototype.tick = function() {
 		if (this.startTime + this.duration < d.getTime()) {
 			if (this.options && this.options.loop) {
 				this.startTime = this.startTime + this.duration;
+			} else if (this.options && this.options.hold) {
+				return;
 			} else {
 				this.running = false;
 				return;
