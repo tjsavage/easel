@@ -59,6 +59,26 @@ var config = {
 					}
 				}
 			}
+		},
+		{
+			"type": "alarm_clock",
+			"options": {
+				"name": "alarm_clock",
+				"ledStripName": "bed_led_strip",
+				"wakeupMinutes": 30,
+				"skynet": {
+					"me": {
+						"type": "client",
+						"name": "alarm_clock",
+						"port": 3005
+					},
+					"server": {
+						"name": "skynet-server",
+						"port": 3001,
+						"ip": "10.0.1.19"
+					}
+				}
+			}
 		}
 	]
 };
