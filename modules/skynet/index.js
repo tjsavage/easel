@@ -121,6 +121,7 @@ Skynet.prototype.requestState = function(data) {
 };
 
 Skynet.prototype.setState = function(name, stateData) {
+    console.log("setting state to",name);
     this.emit("set:state", {
         "to": name,
         "from": this.config.me.name,

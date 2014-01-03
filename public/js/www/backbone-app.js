@@ -82,7 +82,71 @@ Easel.ModuleView = Backbone.View.extend({
 	initialize: function() {
 		this.template = Handlebars.compile($("#template-" + this.model.get("type")).html());
 		this.registerHandlers();
+	},
+	render: function() {
+		this.$el.html(this.template(this.model.toJSON()));
+	
+		var model = this.model;
+		var T = this;
+
+		return this.el;
 	}
+});
+
+Easel.AlarmClockModuleView = Easel.ModuleView.extend({
+	events: {
+		"click #armed": "toggleArmed",
+		"change #hour": "setHour",
+		"change #minute": "setMinute"
+	},
+
+	registerHandlers: function() {
+		this.model.bind("change:armed", this.armedChanged, this);
+		this.model.bind("change:alarmTime.hour", this.hourChanged, this);
+		this.model.bind("change:alarmTime.minute", this.minuteChanged, this);
+	},
+
+	toggleArmed: function() {
+		var newArmed = !this.model.get("armed");
+		this.model.setState({
+			"armed": newArmed
+		});
+	},
+
+	setHour: function() {
+		var newHour = parseInt(this.$el.find("#hour").val());
+		this.model.setState({
+			"alarmTime": {
+				"hour": newHour
+			}
+		});
+	},
+
+	setMinute: function() {
+		var newMinute = parseInt(this.$el.find("#minute").val());
+		this.model.setState({
+			"alarmTime": {
+				"minute": newMinute
+			}
+		});
+	},
+
+	armedChanged: function(model, newArmed) {
+		if (newArmed) {
+			this.$el.find("#armed").removeClass("btn-danger").addClass("btn-success");
+		} else {
+			this.$el.find("#armed").removeClass("btn-success").addClass("btn-danger");
+		}
+	},
+
+	hourChanged: function(model, newHour) {
+		this.$el.find("#hour").val(newHour);
+	},
+
+	minuteChanged: function(model, newMinute) {
+		this.$el.find("#minute").val(newMinute);
+	}
+
 });
 
 Easel.LedStripModuleView = Easel.ModuleView.extend({
@@ -117,7 +181,6 @@ Easel.LedStripModuleView = Easel.ModuleView.extend({
 
 	togglePower: function() {
 		var newPower = !this.model.get("power");
-		console.log("emitting state");
 		this.model.socket.emit("set:state", {
 			"to": this.model.get("name"),
 			"body": {
@@ -128,7 +191,6 @@ Easel.LedStripModuleView = Easel.ModuleView.extend({
 
 	pulseAnimationClicked: function() {
 		if (this.model.get("animation.name") == "pulse") {
-			console.log("setting animation to null");
 			this.model.setState({
 				"animation": null
 			});
@@ -147,7 +209,6 @@ Easel.LedStripModuleView = Easel.ModuleView.extend({
 
 	rainbowAnimationClicked: function() {
 		if (this.model.get("animation.name") == "rainbow") {
-			console.log("setting animation to null");
 			this.model.setState({
 				"animation": null
 			});
@@ -166,7 +227,6 @@ Easel.LedStripModuleView = Easel.ModuleView.extend({
 
 	sunriseAnimationClicked: function() {
 		if (this.model.get("animation.name") == "sunrise") {
-			console.log("setting animation to null");
 			this.model.setState({
 				"animation": null
 			});
@@ -283,6 +343,10 @@ Easel.DashboardView = Backbone.View.extend({
 		var newModuleView = null;
 		if (module.get("type") == "led_strip") {
 			newModuleView = new Easel.LedStripModuleView({
+				model: module
+			});
+		} else if (module.get("type") == "alarm_clock") {
+			newModuleView = new Easel.AlarmClockModuleView({
 				model: module
 			});
 		}
