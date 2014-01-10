@@ -26,7 +26,7 @@ var nightlight = function(app, options) {
 			});
 		} else {
 			this.skynet.setState(T.options.ledStrip, {
-				"power": false
+				"animation": null
 			});
 		}
 	});
