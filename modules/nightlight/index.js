@@ -36,7 +36,7 @@ var nightlight = function(app, options) {
 			});
 		} else {
 			T.tripped = false;
-			if (typeof T.priorLedState == 'undefined') {
+			if (typeof T.priorLedState == 'undefined' || !T.priorLedState) {
 				T.priorLedState = {
 					power: false
 				};
