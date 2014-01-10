@@ -41,6 +41,7 @@ var nightlight = function(app, options) {
 					power: false
 				};
 			}
+			console.log("priorState",T.priorLedState);
 			this.skynet.setState(T.options.ledStrip, T.priorLedState);
 		}
 	});
