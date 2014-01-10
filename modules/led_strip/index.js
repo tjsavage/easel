@@ -152,7 +152,6 @@ var ledStrip = function(app, options) {
 	});
 
 	this.skynet.onSetState(function(stateData) {
-
 		if (typeof stateData.power !== "undefined") {
 			if (T.state.power && !stateData.power) {
 				T.turnOff();

@@ -36,7 +36,12 @@ var nightlight = function(app, options) {
 			});
 		} else {
 			T.tripped = false;
-			this.skynet.setState(T.options.ledStrip, this.priorLedState);
+			if (typeof T.priorLedState == 'undefined') {
+				T.priorLedState = {
+					power: false
+				};
+			}
+			this.skynet.setState(T.options.ledStrip, T.priorLedState);
 		}
 	});
 };
