@@ -3,8 +3,13 @@ var Skynet = require("../skynet");
 var nightlight = function(app, options) {
 	this.options = options;
 	this.skynet = new Skynet(this, options.skynet);
+	this.priorLedState = null;
 
 	var T = this;
+	this.skynet.onBroadcastState(this.options.ledStrip, function(stateData) {
+		this.priorLedState = stateData;
+	});
+
 	this.skynet.onBroadcastState(this.options.motionDetector, function(stateData) {
 		if (stateData.tripped) {
 			this.skynet.setState(T.options.ledStrip, {
@@ -25,9 +30,7 @@ var nightlight = function(app, options) {
 				}
 			});
 		} else {
-			this.skynet.setState(T.options.ledStrip, {
-				"animation": null
-			});
+			this.skynet.setState(T.options.ledStrip, this.priorLedState);
 		}
 	});
 };

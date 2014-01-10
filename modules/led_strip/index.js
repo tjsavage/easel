@@ -7,7 +7,6 @@ var extend = require('util')._extend;
 var ledStrip = function(app, options) {
 	this.options = options;
 	this.skynet = new Skynet(this, options.skynet);
-	this.priorColor = null;
 
 	var spiDevice;
 	if (options.spiDevice) {
@@ -140,8 +139,6 @@ var ledStrip = function(app, options) {
 		}
 		var T = this;
 		var animation = animations.load(animationData.name, this, animationData.duration, animationData.options, function() {
-			T.setColor(T.priorColor);
-			T.lights.all();
 		});
 		this.animation = animation;
 		this.state.animation = animationData;
@@ -155,9 +152,6 @@ var ledStrip = function(app, options) {
 	});
 
 	this.skynet.onSetState(function(stateData) {
-		if (typeof stateData.animation != "undefined") {
-			T.priorColor = extend({}, T.state.color);
-		}
 
 		if (typeof stateData.power !== "undefined") {
 			if (T.state.power && !stateData.power) {
