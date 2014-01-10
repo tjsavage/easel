@@ -155,8 +155,10 @@ var ledStrip = function(app, options) {
 	});
 
 	this.skynet.onSetState(function(stateData) {
-		T.priorColor = extend({}, T.state.color);
-
+		if (typeof stateData.animation == "undefined") {
+			T.priorColor = extend({}, T.state.color);
+		}
+		
 		if (typeof stateData.power !== "undefined") {
 			if (T.state.power && !stateData.power) {
 				T.turnOff();
