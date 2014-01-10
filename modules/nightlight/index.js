@@ -1,4 +1,5 @@
 var Skynet = require("../skynet");
+var extend = require('util')._extend;
 
 var nightlight = function(app, options) {
 	this.options = options;
@@ -8,14 +9,14 @@ var nightlight = function(app, options) {
 
 	var T = this;
 	this.skynet.onBroadcastState(this.options.ledStrip, function(stateData) {
-		if (!this.tripped) {
-			this.priorLedState = stateData;
+		if (!T.tripped) {
+			T.priorLedState = extend({}, stateData);
 		}
 	});
 
 	this.skynet.onBroadcastState(this.options.motionDetector, function(stateData) {
 		if (stateData.tripped) {
-			this.tripped = true;
+			T.tripped = true;
 			this.skynet.setState(T.options.ledStrip, {
 				"power": true,
 				"color": {
@@ -34,7 +35,7 @@ var nightlight = function(app, options) {
 				}
 			});
 		} else {
-			this.tripped = false;
+			T.tripped = false;
 			this.skynet.setState(T.options.ledStrip, this.priorLedState);
 		}
 	});
