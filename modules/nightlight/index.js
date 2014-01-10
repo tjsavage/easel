@@ -6,15 +6,13 @@ var nightlight = function(app, options) {
 
 	var T = this;
 	this.skynet.onBroadcastState(this.options.motionDetector, function(stateData) {
-		console.log("got state");
 		if (stateData.tripped) {
-			console.log("got tripped state");
 			this.skynet.setState(T.options.ledStrip, {
 				"power": true,
 				"color": {
 					"h": 338,
-					"s": .34,
-					"v": .93,
+					"s": 0.34,
+					"v": 0.93,
 				},
 				"animation": {
 					"name": "pulse",
@@ -27,7 +25,6 @@ var nightlight = function(app, options) {
 				}
 			});
 		} else {
-			console.log("got untripped state");
 			this.skynet.setState(T.options.ledStrip, {
 				"power": false
 			});

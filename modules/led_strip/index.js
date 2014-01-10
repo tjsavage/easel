@@ -144,7 +144,6 @@ var ledStrip = function(app, options) {
 			T.lights.all();
 		});
 		this.animation = animation;
-		this.priorColor = extend({}, this.state.color);
 		this.state.animation = animationData;
 		this.animation.start();
 	};
@@ -164,6 +163,8 @@ var ledStrip = function(app, options) {
 				T.turnOn();
 			}
 		}
+		T.priorColor = extend({}, T.state.color);
+
 		if (typeof stateData.color != "undefined" && T.state.power) {
 			T.setColor(stateData.color);
 		}
