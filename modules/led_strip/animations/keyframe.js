@@ -3,8 +3,8 @@ var Animation = require("./animation");
 
 var STEPS = 100;
 
-function KeyFrame(setter, duration, options) {
-	Animation.call(this, setter, duration, options);
+function KeyFrame(setter, duration, options, onFinish) {
+	Animation.call(this, setter, duration, options, onFinish);
 	if (typeof this.options == 'undefined') {
 		this.options = {};
 	}

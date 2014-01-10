@@ -2,8 +2,9 @@ var socketio = require('socket.io');
 var socketio_client = require('socket.io-client');
 
 var options = {
-    transports: ['websocket'],
-    'force new connection': true
+    'transports': ['websocket'],
+    'force new connection': true,
+    'log': false
 };
 
 function Skynet(context, config) {
@@ -15,7 +16,7 @@ function Skynet(context, config) {
         this.socket = socketio_client.connect(this.serverAddress, options);
         this.emit("new:connection", this.config.me);
     } else if (this.config.me.type === "server") {
-        this.io = socketio.listen(config.me.port);
+        this.io = socketio.listen(config.me.port, {log: false});
         this.io.sockets.on("connection", function(socket) {
             socket.on("new:connection", function(machine) {
                 socket.broadcast.emit("new:client", machine);
@@ -98,7 +99,6 @@ Skynet.prototype.onSetState = function(handler) {
 
 Skynet.prototype.onGetState = function(handler) {
     var T = this;
-    console.log("setting onGetStateHandler for",T.config.me.name,handler);
     this.onGetStateHandler = handler;
     this.on("get:state", function(data) {
         if (!T.onGetStateHandler) {
@@ -106,8 +106,6 @@ Skynet.prototype.onGetState = function(handler) {
             return;
         }
         var stateBody = T.onGetStateHandler.call(T.context);
-        console.log("this.config",T.config);
-        console.log("this.context.options",T.context.options);
         var state = {
             "from": T.config.me.name,
             "body": stateBody
@@ -121,7 +119,6 @@ Skynet.prototype.requestState = function(data) {
 };
 
 Skynet.prototype.setState = function(name, stateData) {
-    console.log("setting state to",name);
     this.emit("set:state", {
         "to": name,
         "from": this.config.me.name,

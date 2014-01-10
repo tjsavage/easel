@@ -2,10 +2,12 @@ var Skynet = require("../skynet");
 var LightStrips = require('./LPD8806').LightStrips;
 var animations = require('./animations');
 var util = require("./util");
+var extend = require('util')._extend;
 
 var ledStrip = function(app, options) {
 	this.options = options;
 	this.skynet = new Skynet(this, options.skynet);
+	this.priorColor = null;
 
 	var spiDevice;
 	if (options.spiDevice) {
@@ -38,7 +40,6 @@ var ledStrip = function(app, options) {
 	};
 
 	this.turnOn = function() {
-		console.log("turning on");
 		this.setColor({
 			"r": 255,
 			"g": 255,
@@ -48,7 +49,6 @@ var ledStrip = function(app, options) {
 	};
 
 	this.turnOff = function() {
-		console.log("turning off");
 		this.setColor({
 			"r": 0,
 			"g": 0,
@@ -64,7 +64,6 @@ var ledStrip = function(app, options) {
 	};
 
 	this.setColor = function(colorData) {
-		console.log("setting color",colorData);
 		var newColorData = this.state.color;
 		var rgbChanged = false;
 		var hsvChanged = false;
@@ -131,7 +130,6 @@ var ledStrip = function(app, options) {
 
 
 	this.setAnimation = function(animationData) {
-		console.log("setting animation",animationData);
 		if (typeof this.animation != "undefined" && this.animation) {
 			this.animation.stop();
 		}
@@ -140,8 +138,13 @@ var ledStrip = function(app, options) {
 			this.state.animation = null;
 			return;
 		}
-		var animation = animations.load(animationData.name, this, animationData.duration, animationData.options);
+		var T = this;
+		var animation = animations.load(animationData.name, this, animationData.duration, animationData.options, function() {
+			T.setColor(T.priorColor);
+			T.lights.all();
+		});
 		this.animation = animation;
+		this.priorColor = extend({}, this.state.color);
 		this.state.animation = animationData;
 		this.animation.start();
 	};
@@ -149,15 +152,11 @@ var ledStrip = function(app, options) {
 	var T = this;
 
 	this.skynet.onGetState(function() {
-		console.log("ongetState for led_strip", T.state);
-		console.log("led_strip options",T.options);
 		return T.state;
 	});
 
 	this.skynet.onSetState(function(stateData) {
-		console.log("settingState", stateData);
 		if (typeof stateData.power !== "undefined") {
-			console.log("setting power",stateData.power);
 			if (T.state.power && !stateData.power) {
 				T.turnOff();
 			}
@@ -166,7 +165,6 @@ var ledStrip = function(app, options) {
 			}
 		}
 		if (typeof stateData.color != "undefined" && T.state.power) {
-			console.log("setting color",stateData.color);
 			T.setColor(stateData.color);
 		}
 		if (typeof stateData.animation == "undefined" && T.state.power) {

@@ -1,11 +1,12 @@
 var REFRESH_TIME = 50;
 
-function Animation(setter, duration, options) {
+function Animation(setter, duration, options, onFinish) {
 	this.startTime = null;
 	this.setter = setter;
 	this.duration = duration; //milliseconds
 	this.running = false;
 	this.options = options;
+	this.onFinish = onFinish;
 }
 
 Animation.prototype.start = function() {
@@ -21,6 +22,9 @@ Animation.prototype.start = function() {
 
 Animation.prototype.stop = function() {
 	this.running = false;
+	if (this.onFinish) {
+		this.onFinish();
+	}
 };
 
 Animation.prototype.tick = function() {
@@ -34,7 +38,7 @@ Animation.prototype.tick = function() {
 			} else if (this.options && this.options.hold) {
 				return;
 			} else {
-				this.running = false;
+				this.stop();
 				return;
 			}
 		}

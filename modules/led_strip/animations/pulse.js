@@ -3,8 +3,8 @@ var Animation = require("./animation");
 
 var STEPS = 100;
 
-function Pulse(setter, duration, options) {
-	Animation.call(this, setter, duration, options);
+function Pulse(setter, duration, options, onFinish) {
+	Animation.call(this, setter, duration, options, onFinish);
 
 	this.minValue = 0;
 	this.maxValue = 1;

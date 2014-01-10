@@ -3,8 +3,8 @@ var Animation = require("./animation");
 
 var STEPS = 100;
 
-function Rainbow(setter, duration, options) {
-	Animation.call(this, setter, duration, options);
+function Rainbow(setter, duration, options, onFinish) {
+	Animation.call(this, setter, duration, options, onFinish);
 }
 util.inherits(Rainbow, Animation);
 
