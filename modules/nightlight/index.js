@@ -4,14 +4,18 @@ var nightlight = function(app, options) {
 	this.options = options;
 	this.skynet = new Skynet(this, options.skynet);
 	this.priorLedState = null;
+	this.tripped = false;
 
 	var T = this;
 	this.skynet.onBroadcastState(this.options.ledStrip, function(stateData) {
-		this.priorLedState = stateData;
+		if (!this.tripped) {
+			this.priorLedState = stateData;
+		}
 	});
 
 	this.skynet.onBroadcastState(this.options.motionDetector, function(stateData) {
 		if (stateData.tripped) {
+			this.tripped = true;
 			this.skynet.setState(T.options.ledStrip, {
 				"power": true,
 				"color": {
@@ -30,6 +34,7 @@ var nightlight = function(app, options) {
 				}
 			});
 		} else {
+			this.tripped = false;
 			this.skynet.setState(T.options.ledStrip, this.priorLedState);
 		}
 	});
