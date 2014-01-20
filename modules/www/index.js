@@ -20,6 +20,11 @@ module.exports = function(app, options) {
 		res.render('index', {socketIP: options.socketIP});
 	});
 
+	app.post("/", function(req, res) {
+		console.log(req.body);
+		res.send(200);
+	});
+
 	var skynet = new Skynet(this, options.skynet);
 
 	io.sockets.on('connection', function(socket) {

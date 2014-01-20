@@ -16,8 +16,8 @@ var nightlight = function(app, options) {
 
 	this.skynet.onBroadcastState(this.options.motionDetector, function(stateData) {
 		if (stateData.tripped) {
-			T.tripped = true;
 			if (!T.priorLedState.power) {
+				T.tripped = true;
 				this.skynet.setState(T.options.ledStrip, {
 					"power": true,
 					"color": {
@@ -37,10 +37,12 @@ var nightlight = function(app, options) {
 				});
 			}
 		} else {
-			T.tripped = false;
-			this.skynet.setState(T.options.ledStrip, {
-				power: false
-			});
+			if (T.tripped) {
+				T.tripped = false;
+				this.skynet.setState(T.options.ledStrip, {
+					power: false
+				});
+			}
 		}
 	});
 };
